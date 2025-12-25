@@ -34,7 +34,7 @@
     <link href="/2025/12/25/a-strange-rop/"/>
     <url>/2025/12/25/a-strange-rop/</url>
     
-    <content type="html"><![CDATA[<p>你好!</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>p=process(<span class="hljs-string">&#x27;./pwn&#x27;</span>)<br></code></pre></td></tr></table></figure><p><strong>你好</strong></p><p><img src="/images/1.png" alt="测试图片"></p><p>这是’malloc’的用法</p><p>啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</p>]]></content>
+    <content type="html"><![CDATA[<p>你好!</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>p=process(<span class="hljs-string">&#x27;./pwn&#x27;</span>)<br></code></pre></td></tr></table></figure><p><strong>你好</strong></p><p><img src="/images/1.png" alt="测试图片"></p><p>这是<code>malloc</code>的用法</p><p>啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊</p>]]></content>
     
     
     
