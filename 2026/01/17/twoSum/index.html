@@ -30,8 +30,10 @@
 <meta property="og:image" content="https://roxy5201314.github.io/images/15.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/16.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/17.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/18.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/19.png">
 <meta property="article:published_time" content="2026-01-17T04:44:55.000Z">
-<meta property="article:modified_time" content="2026-01-17T05:40:05.918Z">
+<meta property="article:modified_time" content="2026-01-19T01:38:30.052Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="LeetCode">
 <meta property="article:tag" content="哈希表">
@@ -230,7 +232,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.7k words
+          2.5k words
         
       </span>
     
@@ -241,7 +243,7 @@
         
         
         
-          15 mins
+          21 mins
         
       </span>
     
@@ -311,6 +313,29 @@
 <p><img src="/images/17.png" srcset="/img/loading.gif" lazyload alt="6"></p>
 <p>时间复杂度完美，空间复杂度仍然是<code>O(n)</code>，因为哈希表本质就是空间换时间(不绝对)</p>
 <p>待补充…</p>
+<p>2026.1.19</p>
+<p>仅记录一下做过的题目的代码…</p>
+<p>49.字母异位词分组</p>
+<p><img src="/images/18.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>解法:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    vector&lt;vector&lt;string&gt;&gt; <span class="hljs-built_in">groupAnagrams</span>(vector&lt;string&gt;&amp; strs) &#123;<br>        unordered_map&lt;string, vector&lt;string&gt;&gt; mp;<br><br>        <span class="hljs-keyword">for</span>(string s : strs) &#123;<br>            string key =  s;<br>            <span class="hljs-built_in">sort</span>(key.<span class="hljs-built_in">begin</span>(),key.<span class="hljs-built_in">end</span>());<br>            mp[key].<span class="hljs-built_in">push_back</span>(s); <span class="hljs-comment">//值，索引</span><br>        &#125;<br><br>        vector&lt;vector&lt;string&gt;&gt; result;<br><br>        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">auto</span>&amp; p : mp)&#123;<br>            result.<span class="hljs-built_in">push_back</span>(p.second);<br>        &#125;<br>        <span class="hljs-keyword">return</span> result;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>128.最长连续序列</p>
+<p><img src="/images/19.png" srcset="/img/loading.gif" lazyload alt="如图所示"></p>
+<p>解法:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">longestConsecutive</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums)</span> </span>&#123;<br>        <span class="hljs-function">unordered_set&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">st</span><span class="hljs-params">(nums.begin(), nums.end())</span></span>;<br>        <span class="hljs-type">int</span> ans = <span class="hljs-number">0</span>;<br><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> x : st) &#123;<br>            <span class="hljs-keyword">if</span> (!st.<span class="hljs-built_in">count</span>(x - <span class="hljs-number">1</span>)) &#123;<br>                <span class="hljs-type">int</span> cur = x;<br>                <span class="hljs-type">int</span> len = <span class="hljs-number">1</span>;<br><br>                <span class="hljs-keyword">while</span> (st.<span class="hljs-built_in">count</span>(cur + <span class="hljs-number">1</span>)) &#123;<br>                    cur++;<br>                    len++;<br>                &#125;<br>                ans = <span class="hljs-built_in">max</span>(ans, len);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> ans;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
 
                 
               </div>
@@ -379,7 +404,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Updated on</div>
-          <div>January 17, 2026</div>
+          <div>January 19, 2026</div>
         </div>
       
       
@@ -409,6 +434,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2026/01/19/%E5%8F%8C%E6%8C%87%E9%92%88/" title="双指针">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">双指针</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
