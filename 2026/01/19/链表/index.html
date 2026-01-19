@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://roxy5201314.github.io/images/23.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/24.png">
 <meta property="article:published_time" content="2026-01-19T01:39:30.000Z">
-<meta property="article:modified_time" content="2026-01-19T01:54:26.456Z">
+<meta property="article:modified_time" content="2026-01-19T04:39:16.747Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="链表">
 <meta name="twitter:card" content="summary_large_image">
@@ -286,6 +286,8 @@
 <h2 id="206-反转链表"><a href="#206-反转链表" class="headerlink" title="206.反转链表"></a>206.反转链表</h2><p><img src="/images/24.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <p>解法:</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function">ListNode* <span class="hljs-title">reverseList</span><span class="hljs-params">(ListNode* head)</span> </span>&#123;<br>        ListNode* prev = <span class="hljs-literal">nullptr</span>;<br>        ListNode* cur = head;<br><br>        <span class="hljs-keyword">while</span>(cur)&#123;<br>            ListNode* tmp = cur-&gt;next; <span class="hljs-comment">//保存节点</span><br>            cur-&gt;next = prev;<br>            prev = cur;<br>            cur = tmp;<br>        &#125;<br>        <span class="hljs-keyword">return</span> prev;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+
                 
               </div>
             
