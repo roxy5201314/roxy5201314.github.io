@@ -246,7 +246,7 @@
     <link href="/2026/01/19/%E5%9B%9E%E6%BA%AF/"/>
     <url>/2026/01/19/%E5%9B%9E%E6%BA%AF/</url>
     
-    <content type="html"><![CDATA[]]></content>
+    <content type="html"><![CDATA[<h1 id="回溯算法"><a href="#回溯算法" class="headerlink" title="回溯算法"></a>回溯算法</h1><h2 id="22-括号生成"><a href="#22-括号生成" class="headerlink" title="22.括号生成"></a>22.括号生成</h2><p><img src="/images/27.png" alt="如图"></p><p>解：</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function">vector&lt;string&gt; <span class="hljs-title">generateParenthesis</span><span class="hljs-params">(<span class="hljs-type">int</span> n)</span> </span>&#123;<br>        vector&lt;string&gt; result;<br>        string current;<br>        <span class="hljs-built_in">backtrack</span>(result, current, n, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>        <span class="hljs-keyword">return</span> result;<br>    &#125;<br><br><span class="hljs-keyword">private</span>:<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">backtrack</span><span class="hljs-params">(vector&lt;string&gt;&amp; result, string&amp; current, <span class="hljs-type">int</span> n, <span class="hljs-type">int</span> open, <span class="hljs-type">int</span> close)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (current.<span class="hljs-built_in">size</span>() == <span class="hljs-number">2</span> * n) &#123;<br>            result.<span class="hljs-built_in">push_back</span>(current);<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (open &lt; n) &#123;<br>            current.<span class="hljs-built_in">push_back</span>(<span class="hljs-string">&#x27;(&#x27;</span>);<br>            <span class="hljs-built_in">backtrack</span>(result, current, n, open + <span class="hljs-number">1</span>, close);<br>            current.<span class="hljs-built_in">pop_back</span>();<br>        &#125;<br><br>        <span class="hljs-keyword">if</span> (close &lt; open) &#123;<br>            current.<span class="hljs-built_in">push_back</span>(<span class="hljs-string">&#x27;)&#x27;</span>);<br>            <span class="hljs-built_in">backtrack</span>(result, current, n, open, close + <span class="hljs-number">1</span>);<br>            current.<span class="hljs-built_in">pop_back</span>();<br>        &#125;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>]]></content>
     
     
     <categories>
@@ -296,7 +296,7 @@
     <link href="/2026/01/19/%E6%A0%88/"/>
     <url>/2026/01/19/%E6%A0%88/</url>
     
-    <content type="html"><![CDATA[]]></content>
+    <content type="html"><![CDATA[<h1 id="栈-LIFO"><a href="#栈-LIFO" class="headerlink" title="栈(LIFO)"></a>栈(LIFO)</h1><h2 id="20-有效的括号"><a href="#20-有效的括号" class="headerlink" title="20.有效的括号"></a>20.有效的括号</h2><p><img src="/images/26.png" alt="如图"></p><p>解：</p><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">isValid</span><span class="hljs-params">(string s)</span> </span>&#123;<br>        stack&lt;<span class="hljs-type">char</span>&gt; stk;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">char</span> c : s) &#123;<br>            <span class="hljs-keyword">if</span>(c == <span class="hljs-string">&#x27;(&#x27;</span> || c == <span class="hljs-string">&#x27;[&#x27;</span> || c == <span class="hljs-string">&#x27;&#123;&#x27;</span>)&#123;<br>                stk.<span class="hljs-built_in">push</span>(c);<br>            &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(c == <span class="hljs-string">&#x27;)&#x27;</span> &amp;&amp; !stk.<span class="hljs-built_in">empty</span>() &amp;&amp; stk.<span class="hljs-built_in">top</span>() == <span class="hljs-string">&#x27;(&#x27;</span>)&#123;<br>                stk.<span class="hljs-built_in">pop</span>();<br>            &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(c == <span class="hljs-string">&#x27;]&#x27;</span> &amp;&amp; !stk.<span class="hljs-built_in">empty</span>() &amp;&amp; stk.<span class="hljs-built_in">top</span>() == <span class="hljs-string">&#x27;[&#x27;</span>)&#123;<br>                stk.<span class="hljs-built_in">pop</span>();<br>            &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(c == <span class="hljs-string">&#x27;&#125;&#x27;</span> &amp;&amp; !stk.<span class="hljs-built_in">empty</span>() &amp;&amp; stk.<span class="hljs-built_in">top</span>() == <span class="hljs-string">&#x27;&#123;&#x27;</span>)&#123;<br>                stk.<span class="hljs-built_in">pop</span>();<br>            &#125;<span class="hljs-keyword">else</span>&#123;<br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> stk.<span class="hljs-built_in">empty</span>();<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>]]></content>
     
     
     <categories>
@@ -628,6 +628,8 @@
     
     <tags>
       
+      <tag>内存布局</tag>
+      
       <tag>SROP</tag>
       
       <tag>栈迁移</tag>
@@ -637,8 +639,6 @@
       <tag>ORW</tag>
       
       <tag>寄存器</tag>
-      
-      <tag>内存布局</tag>
       
     </tags>
     
@@ -663,11 +663,11 @@
     
     <tags>
       
+      <tag>内存布局</tag>
+      
       <tag>栈迁移</tag>
       
       <tag>ret2libc</tag>
-      
-      <tag>内存布局</tag>
       
     </tags>
     
@@ -692,9 +692,9 @@
     
     <tags>
       
-      <tag>内存布局</tag>
-      
       <tag>gdb</tag>
+      
+      <tag>内存布局</tag>
       
     </tags>
     
