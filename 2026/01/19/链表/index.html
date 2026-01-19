@@ -19,18 +19,23 @@
   <meta name="author" content="roxy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="链表160.相交链表 解: 123456789101112131415161718192021&#x2F;** * Definition for singly-linked list. * struct ListNode &#123; *     int val; *     ListNode *next; *     ListNode(int x) : val(x), next(NULL) &#123;&amp;">
+    <meta name="description" content="链表核心武器： 双指针  160.相交链表 解: 123456789101112131415161718192021&#x2F;** * Definition for singly-linked list. * struct ListNode &#123; *     int val; *     ListNode *next; *     ListNode(int x) : val(x), next(NU">
 <meta property="og:type" content="article">
 <meta property="og:title" content="链表">
 <meta property="og:url" content="https://roxy5201314.github.io/2026/01/19/%E9%93%BE%E8%A1%A8/index.html">
 <meta property="og:site_name" content="roxy&#39;s blog">
-<meta property="og:description" content="链表160.相交链表 解: 123456789101112131415161718192021&#x2F;** * Definition for singly-linked list. * struct ListNode &#123; *     int val; *     ListNode *next; *     ListNode(int x) : val(x), next(NULL) &#123;&amp;">
+<meta property="og:description" content="链表核心武器： 双指针  160.相交链表 解: 123456789101112131415161718192021&#x2F;** * Definition for singly-linked list. * struct ListNode &#123; *     int val; *     ListNode *next; *     ListNode(int x) : val(x), next(NU">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://roxy5201314.github.io/images/23.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/24.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/28.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/29.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/30.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/31.png">
 <meta property="article:published_time" content="2026-01-19T01:39:30.000Z">
-<meta property="article:modified_time" content="2026-01-19T04:39:16.747Z">
+<meta property="article:modified_time" content="2026-01-19T15:25:53.512Z">
 <meta property="article:author" content="roxy">
+<meta property="article:tag" content="双指针">
 <meta property="article:tag" content="链表">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://roxy5201314.github.io/images/23.png">
@@ -226,7 +231,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          709 words
+          2.5k words
         
       </span>
     
@@ -237,7 +242,7 @@
         
         
         
-          6 mins
+          21 mins
         
       </span>
     
@@ -279,13 +284,30 @@
             
               <div class="markdown-body">
                 
-                <h1 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h1><h2 id="160-相交链表"><a href="#160-相交链表" class="headerlink" title="160.相交链表"></a>160.相交链表</h2><p><img src="/images/23.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+                <h1 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h1><p>核心武器： <strong>双指针</strong> </p>
+<h2 id="160-相交链表"><a href="#160-相交链表" class="headerlink" title="160.相交链表"></a>160.相交链表</h2><p><img src="/images/23.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <p>解:</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Definition for singly-linked list.</span><br><span class="hljs-comment"> * struct ListNode &#123;</span><br><span class="hljs-comment"> *     int val;</span><br><span class="hljs-comment"> *     ListNode *next;</span><br><span class="hljs-comment"> *     ListNode(int x) : val(x), next(NULL) &#123;&#125;</span><br><span class="hljs-comment"> * &#125;;</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function">ListNode *<span class="hljs-title">getIntersectionNode</span><span class="hljs-params">(ListNode *headA, ListNode *headB)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span>(!headA || !headB) <span class="hljs-keyword">return</span> <span class="hljs-literal">nullptr</span>;<br>        ListNode* p1 = headA;<br>        ListNode* p2 = headB;  <span class="hljs-comment">//双指针</span><br>        <span class="hljs-keyword">while</span>(p1 != p2)&#123;<br>            p1 = (p1 ? p1-&gt;next : headB);<br>            p2 = (p2 ? p2-&gt;next : headA);<br>        &#125;<br>        <span class="hljs-keyword">return</span> p1;  <span class="hljs-comment">//相交节点 or nullptr</span><br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
 
 <h2 id="206-反转链表"><a href="#206-反转链表" class="headerlink" title="206.反转链表"></a>206.反转链表</h2><p><img src="/images/24.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <p>解法:</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function">ListNode* <span class="hljs-title">reverseList</span><span class="hljs-params">(ListNode* head)</span> </span>&#123;<br>        ListNode* prev = <span class="hljs-literal">nullptr</span>;<br>        ListNode* cur = head;<br><br>        <span class="hljs-keyword">while</span>(cur)&#123;<br>            ListNode* tmp = cur-&gt;next; <span class="hljs-comment">//保存节点</span><br>            cur-&gt;next = prev;<br>            prev = cur;<br>            cur = tmp;<br>        &#125;<br>        <span class="hljs-keyword">return</span> prev;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h2 id="234-回文链表"><a href="#234-回文链表" class="headerlink" title="234.回文链表"></a>234.回文链表</h2><p><img src="/images/28.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>解：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">isPalindrome</span><span class="hljs-params">(ListNode* head)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span>(!head || !head-&gt;next) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>        ListNode* slow = head;<br>        ListNode* fast = head;<br>        <span class="hljs-keyword">while</span>(fast &amp;&amp; fast-&gt;next)&#123;<br>            slow = slow-&gt;next;<br>            fast = fast-&gt;next-&gt;next;<br>        &#125;<br><br>        ListNode* prev = <span class="hljs-literal">nullptr</span>;<br>        <span class="hljs-keyword">while</span>(slow)&#123;<br>            ListNode* next = slow-&gt;next;<br>            slow-&gt;next = prev;<br>            prev = slow;<br>            slow = next;  <span class="hljs-comment">//反转链表</span><br>        &#125;<br>        ListNode* left = head;<br>        ListNode* right = prev;<br>        <span class="hljs-keyword">while</span>(right)&#123;<br>            <span class="hljs-keyword">if</span>(left-&gt;val != right-&gt;val)&#123;<br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>            &#125;<br>            left = left-&gt;next;<br>            right = right-&gt;next;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h2 id="141-环形链表"><a href="#141-环形链表" class="headerlink" title="141.环形链表"></a>141.环形链表</h2><p><img src="/images/29.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>解：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">hasCycle</span><span class="hljs-params">(ListNode *head)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span>(!head || !head-&gt;next) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        ListNode* slow = head;<br>        ListNode* fast = head;<br>        <span class="hljs-keyword">while</span>(fast &amp;&amp; fast-&gt;next)&#123;<br>            slow = slow-&gt;next;<br>            fast = fast-&gt;next-&gt;next;<br>            <span class="hljs-keyword">if</span>(slow == fast) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h2 id="142-环形链表II"><a href="#142-环形链表II" class="headerlink" title="142.环形链表II"></a>142.环形链表II</h2><p><img src="/images/30.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>解：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function">ListNode *<span class="hljs-title">detectCycle</span><span class="hljs-params">(ListNode *head)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span>(!head || !head-&gt;next) <span class="hljs-keyword">return</span> <span class="hljs-literal">nullptr</span>;<br>        ListNode* slow = head;<br>        ListNode* fast = head;<br>        <span class="hljs-keyword">while</span>(fast &amp;&amp; fast-&gt;next)&#123;<br>            slow = slow-&gt;next;<br>            fast = fast-&gt;next-&gt;next;<br>            <span class="hljs-keyword">if</span>(slow == fast) <span class="hljs-keyword">break</span>;<br>        &#125;<br>        <span class="hljs-keyword">if</span>(!fast || !fast-&gt;next) <span class="hljs-keyword">return</span> <span class="hljs-literal">nullptr</span>;<br>        slow = head;<br>        <span class="hljs-keyword">while</span>(slow != fast)&#123;<br>            slow = slow-&gt;next;<br>            fast = fast-&gt;next;<br>        &#125;<br>        <span class="hljs-keyword">return</span> slow;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h2 id="21-合并两个有序链表"><a href="#21-合并两个有序链表" class="headerlink" title="21.合并两个有序链表"></a>21.合并两个有序链表</h2><p><img src="/images/31.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>解：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function">ListNode* <span class="hljs-title">mergeTwoLists</span><span class="hljs-params">(ListNode* list1, ListNode* list2)</span> </span>&#123;<br>        <span class="hljs-function">ListNode <span class="hljs-title">dummy</span><span class="hljs-params">(<span class="hljs-number">0</span>)</span></span>;<br>        ListNode* cur = &amp;dummy;<br>        <span class="hljs-keyword">while</span>(list1 &amp;&amp; list2)&#123;<br>            <span class="hljs-keyword">if</span>(list1-&gt;val &lt;= list2-&gt;val)&#123;<br>                cur-&gt;next = list1;<br>                list1 = list1-&gt;next;<br>            &#125;<span class="hljs-keyword">else</span>&#123;<br>                cur-&gt;next = list2;<br>                list2 = list2-&gt;next;<br>            &#125;<br>            cur = cur-&gt;next;<br>        &#125;<br>        cur-&gt;next = list1 ? list1 : list2;<br>        <span class="hljs-keyword">return</span> dummy.next;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
 
 
                 
@@ -319,6 +341,8 @@
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E5%8F%8C%E6%8C%87%E9%92%88/" class="print-no-link">#双指针</a>
       
         <a href="/tags/%E9%93%BE%E8%A1%A8/" class="print-no-link">#链表</a>
       
