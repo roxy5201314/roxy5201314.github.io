@@ -31,8 +31,10 @@
 <meta property="og:image" content="https://roxy5201314.github.io/images/36.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/37.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/38.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/39.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/40.png">
 <meta property="article:published_time" content="2026-01-19T04:33:32.000Z">
-<meta property="article:modified_time" content="2026-01-20T08:48:12.845Z">
+<meta property="article:modified_time" content="2026-01-20T11:35:50.082Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="二叉树">
 <meta name="twitter:card" content="summary_large_image">
@@ -229,7 +231,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.7k words
+          2.7k words
         
       </span>
     
@@ -240,7 +242,7 @@
         
         
         
-          15 mins
+          23 mins
         
       </span>
     
@@ -303,7 +305,13 @@
 <p>解：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-type">int</span> ans = <span class="hljs-number">0</span>;<br><br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">depth</span><span class="hljs-params">(TreeNode* root)</span></span>&#123;<br>        <span class="hljs-keyword">if</span>(!root) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-type">int</span> left = <span class="hljs-built_in">depth</span>(root-&gt;left);<br>        <span class="hljs-type">int</span> right = <span class="hljs-built_in">depth</span>(root-&gt;right);<br><br>        ans = <span class="hljs-built_in">max</span>(ans, left + right);<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">max</span>(left, right) + <span class="hljs-number">1</span>;<br>    &#125; <br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">diameterOfBinaryTree</span><span class="hljs-params">(TreeNode* root)</span> </span>&#123;<br>        <span class="hljs-built_in">depth</span>(root);<br>        <span class="hljs-keyword">return</span> ans;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
 
+<h2 id="108-将有序数组转换为二叉搜索树"><a href="#108-将有序数组转换为二叉搜索树" class="headerlink" title="108.将有序数组转换为二叉搜索树"></a>108.将有序数组转换为二叉搜索树</h2><p><img src="/images/39.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>解：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function">TreeNode* <span class="hljs-title">build</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span></span>&#123;<br>        <span class="hljs-keyword">if</span>(l &gt; r) <span class="hljs-keyword">return</span> <span class="hljs-literal">nullptr</span>;<br>        <span class="hljs-type">int</span> mid = l + (r - l) / <span class="hljs-number">2</span>;<br>        TreeNode* root = <span class="hljs-keyword">new</span> <span class="hljs-built_in">TreeNode</span>(nums[mid]);<br>        root-&gt;left = <span class="hljs-built_in">build</span>(nums, l, mid - <span class="hljs-number">1</span>);<br>        root-&gt;right = <span class="hljs-built_in">build</span>(nums, mid + <span class="hljs-number">1</span>, r);<br>        <span class="hljs-keyword">return</span> root;<br>    &#125;<br>    <span class="hljs-function">TreeNode* <span class="hljs-title">sortedArrayToBST</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums)</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">build</span>(nums,<span class="hljs-number">0</span>,nums.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>);<br>    &#125; <br>&#125;;<br></code></pre></td></tr></table></figure>
 
+<h2 id="102-二叉树的层序遍历"><a href="#102-二叉树的层序遍历" class="headerlink" title="102.二叉树的层序遍历"></a>102.二叉树的层序遍历</h2><p><img src="/images/40.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>解：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt; <span class="hljs-built_in">levelOrder</span>(TreeNode* root) &#123;<br>        vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt; res;<br>        <span class="hljs-keyword">if</span> (!root) <span class="hljs-keyword">return</span> res;<br>        queue&lt;TreeNode*&gt; q;  <span class="hljs-comment">//队列</span><br>        q.<span class="hljs-built_in">push</span>(root);<br>        <span class="hljs-keyword">while</span> (!q.<span class="hljs-built_in">empty</span>()) &#123;<br>            vector&lt;<span class="hljs-type">int</span>&gt; level;<br>            <span class="hljs-type">int</span> size = q.<span class="hljs-built_in">size</span>();<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; size; i++) &#123;<br>                TreeNode* node = q.<span class="hljs-built_in">front</span>();<br>                q.<span class="hljs-built_in">pop</span>();<br>                level.<span class="hljs-built_in">push_back</span>(node-&gt;val);<br>                <span class="hljs-keyword">if</span>(node-&gt;left) q.<span class="hljs-built_in">push</span>(node-&gt;left);<br>                <span class="hljs-keyword">if</span>(node-&gt;right) q.<span class="hljs-built_in">push</span>(node-&gt;right);<br>            &#125;<br>            res.<span class="hljs-built_in">push_back</span>(level);<br>        &#125;<br>        <span class="hljs-keyword">return</span> res;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
                 
               </div>
             
