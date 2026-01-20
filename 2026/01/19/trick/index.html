@@ -27,8 +27,9 @@
 <meta property="og:description" content="trick136.只出现一次的数字 巧妙利用异或的性质 解： 12345678910class Solution &#123;public:    int singleNumber(vector&lt;int&gt;&amp; nums) &#123;        int ans &#x3D; 0;        for(int c : nums)&#123;            ans ^&#x3D; c;">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://roxy5201314.github.io/images/32.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/33.png">
 <meta property="article:published_time" content="2026-01-19T04:32:35.000Z">
-<meta property="article:modified_time" content="2026-01-19T15:31:54.799Z">
+<meta property="article:modified_time" content="2026-01-20T05:43:51.624Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="trick">
 <meta property="article:tag" content="异或">
@@ -226,7 +227,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          179 words
+          516 words
         
       </span>
     
@@ -237,7 +238,7 @@
         
         
         
-          2 mins
+          5 mins
         
       </span>
     
@@ -283,6 +284,11 @@
 <p>巧妙利用<strong>异或</strong>的性质</p>
 <p>解：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">singleNumber</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums)</span> </span>&#123;<br>        <span class="hljs-type">int</span> ans = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> c : nums)&#123;<br>            ans ^= c;<br>        &#125;<br>        <span class="hljs-keyword">return</span> ans;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h2 id="169-多数元素"><a href="#169-多数元素" class="headerlink" title="169.多数元素"></a>169.多数元素</h2><p><img src="/images/33.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p><code>Boyer–Moore 投票算法</code></p>
+<p>解：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">majorityElement</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums)</span> </span>&#123;<br>        <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;<br>        <span class="hljs-type">int</span> candidate = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; nums.<span class="hljs-built_in">size</span>(); i++)&#123;<br>            <span class="hljs-keyword">if</span>(count == <span class="hljs-number">0</span>)&#123;<br>                candidate = nums[i];<br>            &#125;<br>            <span class="hljs-keyword">if</span>(nums[i] == candidate)&#123;<br>                count++;<br>            &#125;<span class="hljs-keyword">else</span>&#123;<br>                count--;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> candidate;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -348,7 +354,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Updated on</div>
-          <div>January 19, 2026</div>
+          <div>January 20, 2026</div>
         </div>
       
       
