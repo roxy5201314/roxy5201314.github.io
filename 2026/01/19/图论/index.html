@@ -19,18 +19,20 @@
   <meta name="author" content="roxy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="图论">
+    <meta name="description" content="图论200.岛屿数量 DFS解法深度优先搜索 1234567891011121314151617181920212223242526class Solution &#123;public:    int m,n;    void dfs(vector&lt;vector&lt;char&gt;&gt;&amp; grid,int x,int y)&#123;        if(x&lt;0||x">
 <meta property="og:type" content="article">
 <meta property="og:title" content="图论">
 <meta property="og:url" content="https://roxy5201314.github.io/2026/01/19/%E5%9B%BE%E8%AE%BA/index.html">
 <meta property="og:site_name" content="roxy&#39;s blog">
-<meta property="og:description" content="图论">
+<meta property="og:description" content="图论200.岛屿数量 DFS解法深度优先搜索 1234567891011121314151617181920212223242526class Solution &#123;public:    int m,n;    void dfs(vector&lt;vector&lt;char&gt;&gt;&amp; grid,int x,int y)&#123;        if(x&lt;0||x">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://roxy5201314.github.io/images/46.png">
 <meta property="article:published_time" content="2026-01-19T04:33:24.000Z">
-<meta property="article:modified_time" content="2026-01-19T15:32:59.734Z">
+<meta property="article:modified_time" content="2026-01-21T05:22:59.406Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="图">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://roxy5201314.github.io/images/46.png">
   
   
   
@@ -223,7 +225,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2 words
+          1.4k words
         
       </span>
     
@@ -234,7 +236,7 @@
         
         
         
-          1 mins
+          12 mins
         
       </span>
     
@@ -276,7 +278,13 @@
             
               <div class="markdown-body">
                 
-                <h1 id="图论"><a href="#图论" class="headerlink" title="图论"></a>图论</h1>
+                <h1 id="图论"><a href="#图论" class="headerlink" title="图论"></a>图论</h1><h2 id="200-岛屿数量"><a href="#200-岛屿数量" class="headerlink" title="200.岛屿数量"></a>200.岛屿数量</h2><p><img src="/images/46.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<h3 id="DFS解法"><a href="#DFS解法" class="headerlink" title="DFS解法"></a>DFS解法</h3><p><strong>深度优先搜索</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-type">int</span> m,n;<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">dfs</span><span class="hljs-params">(vector&lt;vector&lt;<span class="hljs-type">char</span>&gt;&gt;&amp; grid,<span class="hljs-type">int</span> x,<span class="hljs-type">int</span> y)</span></span>&#123;<br>        <span class="hljs-keyword">if</span>(x&lt;<span class="hljs-number">0</span>||x&gt;=m||y&lt;<span class="hljs-number">0</span>||y&gt;=n||grid[x][y]==<span class="hljs-string">&#x27;0&#x27;</span>) <span class="hljs-keyword">return</span>; <span class="hljs-comment">//越界 or 遇到水 直接停</span><br>        grid[x][y] = <span class="hljs-string">&#x27;0&#x27;</span>; <span class="hljs-comment">//把当前陆地淹掉</span><br>        <span class="hljs-built_in">dfs</span>(grid,x<span class="hljs-number">+1</span>,y);<br>        <span class="hljs-built_in">dfs</span>(grid,x<span class="hljs-number">-1</span>,y);  <span class="hljs-comment">//四个方向递归</span><br>        <span class="hljs-built_in">dfs</span>(grid,x,y<span class="hljs-number">+1</span>);<br>        <span class="hljs-built_in">dfs</span>(grid,x,y<span class="hljs-number">-1</span>);<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">numIslands</span><span class="hljs-params">(vector&lt;vector&lt;<span class="hljs-type">char</span>&gt;&gt;&amp; grid)</span> </span>&#123;<br>        m = grid.<span class="hljs-built_in">size</span>();<br>        n = grid[<span class="hljs-number">0</span>].<span class="hljs-built_in">size</span>();<br>        <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; m; i++)&#123;<br>            <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; n; j++)&#123;<br>                <span class="hljs-keyword">if</span>(grid[i][j] == <span class="hljs-string">&#x27;1&#x27;</span>)&#123;<br>                    count++;  <span class="hljs-comment">//发现一个新岛</span><br>                    <span class="hljs-built_in">dfs</span>(grid,i,j); <span class="hljs-comment">//淹掉整个岛屿</span><br>                &#125;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> count;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="BFS解法"><a href="#BFS解法" class="headerlink" title="BFS解法"></a>BFS解法</h3><p><strong>广度优先搜索</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">numIslands</span><span class="hljs-params">(vector&lt;vector&lt;<span class="hljs-type">char</span>&gt;&gt;&amp; grid)</span> </span>&#123;<br>        <span class="hljs-type">int</span> m = grid.<span class="hljs-built_in">size</span>();<br>        <span class="hljs-type">int</span> n = grid[<span class="hljs-number">0</span>].<span class="hljs-built_in">size</span>();<br>        <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>;<br>        <span class="hljs-type">int</span> dx[<span class="hljs-number">4</span>] = &#123;<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">-1</span>&#125;;<br>        <span class="hljs-type">int</span> dy[<span class="hljs-number">4</span>] = &#123;<span class="hljs-number">1</span>, <span class="hljs-number">-1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>&#125;;<br>        queue&lt;pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt;&gt; q;  <span class="hljs-comment">//队列</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; m; i++) &#123;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; n; j++) &#123;<br>                <span class="hljs-keyword">if</span> (grid[i][j] == <span class="hljs-string">&#x27;1&#x27;</span>) &#123;<br>                    count++;<br>                    grid[i][j] = <span class="hljs-string">&#x27;0&#x27;</span>;<br>                    q.<span class="hljs-built_in">push</span>(&#123;i, j&#125;);<br>                    <span class="hljs-keyword">while</span> (!q.<span class="hljs-built_in">empty</span>()) &#123;<br>                        <span class="hljs-keyword">auto</span> [x, y] = q.<span class="hljs-built_in">front</span>();<br>                        q.<span class="hljs-built_in">pop</span>();<br>                        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = <span class="hljs-number">0</span>; k &lt; <span class="hljs-number">4</span>; k++) &#123;<br>                            <span class="hljs-type">int</span> nx = x + dx[k];<br>                            <span class="hljs-type">int</span> ny = y + dy[k];<br>                            <span class="hljs-keyword">if</span> (nx &gt;= <span class="hljs-number">0</span> &amp;&amp; nx &lt; m &amp;&amp; ny &gt;= <span class="hljs-number">0</span> &amp;&amp; ny &lt; n &amp;&amp;<br>                                grid[nx][ny] == <span class="hljs-string">&#x27;1&#x27;</span>) &#123;<br>                                grid[nx][ny] = <span class="hljs-string">&#x27;0&#x27;</span>;<br>                                q.<span class="hljs-built_in">push</span>(&#123;nx, ny&#125;);<br>                            &#125;<br>                        &#125;<br>                    &#125;<br>                &#125;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> count;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
                 
               </div>
             
@@ -340,7 +348,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Updated on</div>
-          <div>January 19, 2026</div>
+          <div>January 21, 2026</div>
         </div>
       
       
