@@ -45,7 +45,9 @@
     
     <tags>
       
-      <tag>字串</tag>
+      <tag>LeetCode</tag>
+      
+      <tag>子串</tag>
       
     </tags>
     
@@ -120,7 +122,11 @@
     
     <tags>
       
+      <tag>LeetCode</tag>
+      
       <tag>二叉树</tag>
+      
+      <tag>数据结构</tag>
       
     </tags>
     
@@ -144,6 +150,8 @@
     
     
     <tags>
+      
+      <tag>LeetCode</tag>
       
       <tag>图</tag>
       
@@ -169,6 +177,8 @@
     
     
     <tags>
+      
+      <tag>LeetCode</tag>
       
       <tag>二分查找</tag>
       
@@ -245,9 +255,13 @@
     
     <tags>
       
+      <tag>LeetCode</tag>
+      
       <tag>异或</tag>
       
       <tag>trick</tag>
+      
+      <tag>算法</tag>
       
     </tags>
     
@@ -271,6 +285,8 @@
     
     
     <tags>
+      
+      <tag>LeetCode</tag>
       
       <tag>回溯</tag>
       
@@ -299,6 +315,8 @@
       
       <tag>动态规划</tag>
       
+      <tag>LeetCode</tag>
+      
     </tags>
     
   </entry>
@@ -321,6 +339,10 @@
     
     
     <tags>
+      
+      <tag>LeetCode</tag>
+      
+      <tag>数据结构</tag>
       
       <tag>栈</tag>
       
@@ -346,6 +368,10 @@
     
     
     <tags>
+      
+      <tag>LeetCode</tag>
+      
+      <tag>数据结构</tag>
       
       <tag>双指针</tag>
       
@@ -374,6 +400,10 @@
     
     <tags>
       
+      <tag>LeetCode</tag>
+      
+      <tag>算法</tag>
+      
       <tag>双指针</tag>
       
     </tags>
@@ -399,11 +429,11 @@
     
     <tags>
       
+      <tag>LeetCode</tag>
+      
       <tag>哈希表</tag>
       
       <tag>性能优化</tag>
-      
-      <tag>LeetCode</tag>
       
     </tags>
     
