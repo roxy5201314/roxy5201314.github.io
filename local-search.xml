@@ -284,11 +284,11 @@
       
       <tag>LeetCode</tag>
       
-      <tag>算法</tag>
-      
       <tag>异或</tag>
       
       <tag>trick</tag>
+      
+      <tag>算法</tag>
       
     </tags>
     
@@ -398,9 +398,9 @@
       
       <tag>LeetCode</tag>
       
-      <tag>数据结构</tag>
-      
       <tag>双指针</tag>
+      
+      <tag>数据结构</tag>
       
       <tag>链表</tag>
       
@@ -429,9 +429,9 @@
       
       <tag>LeetCode</tag>
       
-      <tag>双指针</tag>
-      
       <tag>算法</tag>
+      
+      <tag>双指针</tag>
       
     </tags>
     
@@ -539,9 +539,9 @@
     
     <tags>
       
-      <tag>linux信号机制</tag>
-      
       <tag>SROP</tag>
+      
+      <tag>linux信号机制</tag>
       
     </tags>
     
@@ -593,11 +593,11 @@
     
     <tags>
       
+      <tag>寄存器</tag>
+      
       <tag>shellcode编写</tag>
       
       <tag>汇编语言</tag>
-      
-      <tag>寄存器</tag>
       
     </tags>
     
@@ -622,9 +622,9 @@
     
     <tags>
       
-      <tag>ret2GOT</tag>
-      
       <tag>fmt</tag>
+      
+      <tag>ret2GOT</tag>
       
     </tags>
     
@@ -664,7 +664,7 @@
     <link href="/2025/12/25/hello-pwn/"/>
     <url>/2025/12/25/hello-pwn/</url>
     
-    <content type="html"><![CDATA[<p>用此博客来记录我在<code>pwn</code>学习过程中的一些题解与思考</p><p>希望你能有所收获…</p><p>modification:</p><p>于2026.1.1</p><p>不止于pwn</p><p>move forward!</p><p>patience is key in life…</p>]]></content>
+    <content type="html"><![CDATA[<p>用此博客来记录我在<code>pwn</code>学习过程中的一些题解与思考</p><p>希望你能有所收获…</p><p>ps:自言自语</p><p>bro以为自己是网红blogger</p><p>实则静态博客闹麻了</p><p>不过写给以后的自己看似乎也不错???</p><p>modification:</p><p>于2026.1.1</p><p>最近学习了一些栈漏洞</p><p>本打算继续学堆</p><p>但是我要先摆几天</p><p>期末还没复习</p><p>不重要了</p><p>最讨厌的就是卷成绩这种事</p><p>最后</p><p>不止于pwn</p><p>move forward!</p><p>patience is key in life…</p><p>ps:大一上</p><p>补充:</p><p>2026.2.2</p><p>随记</p><p>对于未来比较迷茫</p><p>不过还是奉行我的人生信条</p><p>做自己想做的!</p><p>我感觉的coding能力似乎也太差了，有点过于依赖ai了…</p><p>关于怎么提升也没有什么头绪，也许需要刷点数据结构与算法题?</p><p>还是做一些项目？</p><p>都试试吧</p><p>没什么天赋</p><p>只剩个孰能生巧了</p><p>顺便借着pwn补补os和计组</p><p>misc osint web crypto reverse嘛</p><p>看看就好</p><p>主要还是没有pwn带来的那种快感强烈</p><p>不过我还是太贪玩了</p><p>虽说做出算法题 or pwn题的即时反馈之乐趣也很诱人</p><p>但终究有一定的<code>时间成本</code></p><p>而手机这种低成本的娱乐方式太难以抵抗了!</p><p>不过这也是生活啊~</p><p>最近在看藤本树的漫画</p><p>比如再见绘梨，蓦然回首，炎拳，电锯人</p><p>这人画得还怪有意思的</p><p>反正我挺喜欢</p><p>还和高中同学reunion</p><p>仿佛回到了那个无忧无虑的高三…</p><p>大概就是这样吧</p><p>现在是大一上的寒假</p><p>多年后的我</p><p>祝你看到这些的时候坚守初心</p><p>但也天天开心</p><p>有点唐</p><p>不过</p><p>确实挺不错的</p>]]></content>
     
     
     <categories>
@@ -709,9 +709,9 @@
       
       <tag>ret2libc</tag>
       
-      <tag>寄存器</tag>
-      
       <tag>ORW</tag>
+      
+      <tag>寄存器</tag>
       
     </tags>
     
