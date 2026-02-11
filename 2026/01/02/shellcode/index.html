@@ -27,7 +27,7 @@
 <meta property="og:description" content="今天来分享一下关于shellcode编写技术的一些题目，在此之前，需要你对x86-64的汇编指令，寄存器调用约定，栈有一定了解 先来讲比较简单的ret2shellcode技术 前提条件是NX保护没开，即栈可执行 因此可以直接使用pwntools的一个非常强大的集成功能 12from pwn import *shellcode &#x3D; asm(shellcraft.sh())  通常payload是:">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-01-02T09:33:43.000Z">
-<meta property="article:modified_time" content="2026-01-16T03:22:09.311Z">
+<meta property="article:modified_time" content="2026-02-11T09:35:38.543Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="shellcode编写">
 <meta property="article:tag" content="寄存器">
@@ -236,7 +236,7 @@
         
         
         
-          49 mins
+          50 mins
         
       </span>
     
@@ -334,6 +334,10 @@
 <p>LIFO,push压栈<code>rsp -= 8</code>,pop出栈<code>rsp += 8</code>…</p>
 <p>感谢阅读…</p>
 <p>后面再补充吧…</p>
+<p>2026.2.11吐槽:</p>
+<p>被lactf的shellcode打败了…</p>
+<p>不过</p>
+<p>慢慢来吧…</p>
 
                 
               </div>
@@ -402,7 +406,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>Updated on</div>
-          <div>January 16, 2026</div>
+          <div>February 11, 2026</div>
         </div>
       
       
