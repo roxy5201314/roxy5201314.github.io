@@ -19,18 +19,18 @@
   <meta name="author" content="roxy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="题目来自2025XSWCTF决赛的pwn题: a_atrange_rop 题目为64位动态链接elf文件 保护为NX和canary 既然题目叫a_stranre_rop 我们先看看有没有gadget 1ROPgadget --binary .&#x2F;a_strange_rop | grep &quot;pop rdi&quot;  找到了pop rdi; ret;这样的一个gadget 先观察一下题目逻">
+    <meta name="description" content="题目来自2025XSWCTF决赛的pwn题: a_atrange_rop 赛后才做出来 我也真是无敌了… 题目为64位动态链接elf文件 保护为NX和canary 既然题目叫a_stranre_rop 我们先看看有没有gadget 1ROPgadget --binary .&#x2F;a_strange_rop | grep &quot;pop rdi&quot;  找到了pop rdi; ret;这样的一">
 <meta property="og:type" content="article">
 <meta property="og:title" content="a_strange_rop">
 <meta property="og:url" content="https://roxy5201314.github.io/2025/12/25/a-strange-rop/index.html">
 <meta property="og:site_name" content="roxy&#39;s blog">
-<meta property="og:description" content="题目来自2025XSWCTF决赛的pwn题: a_atrange_rop 题目为64位动态链接elf文件 保护为NX和canary 既然题目叫a_stranre_rop 我们先看看有没有gadget 1ROPgadget --binary .&#x2F;a_strange_rop | grep &quot;pop rdi&quot;  找到了pop rdi; ret;这样的一个gadget 先观察一下题目逻">
+<meta property="og:description" content="题目来自2025XSWCTF决赛的pwn题: a_atrange_rop 赛后才做出来 我也真是无敌了… 题目为64位动态链接elf文件 保护为NX和canary 既然题目叫a_stranre_rop 我们先看看有没有gadget 1ROPgadget --binary .&#x2F;a_strange_rop | grep &quot;pop rdi&quot;  找到了pop rdi; ret;这样的一">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://roxy5201314.github.io/images/1.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/2.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/3.png">
 <meta property="article:published_time" content="2025-12-24T20:49:48.000Z">
-<meta property="article:modified_time" content="2026-02-11T09:29:34.597Z">
+<meta property="article:modified_time" content="2026-02-12T14:30:00.680Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="gdb">
 <meta property="article:tag" content="内存布局">
@@ -282,6 +282,8 @@
               <div class="markdown-body">
                 
                 <p>题目来自2025XSWCTF决赛的pwn题: <code>a_atrange_rop</code></p>
+<p>赛后才做出来</p>
+<p>我也真是无敌了…</p>
 <p>题目为64位动态链接elf文件</p>
 <p>保护为<code>NX</code>和<code>canary</code></p>
 <p>既然题目叫a_stranre_rop</p>
@@ -398,7 +400,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2026年2月11日</div>
+          <div>2026年2月12日</div>
         </div>
       
       

