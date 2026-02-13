@@ -730,9 +730,9 @@
     
     <tags>
       
-      <tag>fmt</tag>
-      
       <tag>ret2GOT</tag>
+      
+      <tag>fmt</tag>
       
     </tags>
     
