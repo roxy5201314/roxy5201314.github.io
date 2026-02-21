@@ -27,7 +27,7 @@
 <meta property="og:description" content="ok啊兄弟们晚上好 今天也是实在无聊简单了解了一下计算机组成原理，不过也有一些好奇心的因素在就是了 但是其中具体电路的实现我实在是看不懂，电学本来就没学好，遂放弃理解电路实际组成，只关注抽象的过程，也因此不得不赞叹抽象的力量，使得我们不用过多关注于这些复杂的实现! 取名为nonsense，也算是一种自嘲吧! 开始吧!  你有没有想过，你写的c语言程序计算机是怎么运行的? 根据panorama这篇(">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-02-21T10:41:23.000Z">
-<meta property="article:modified_time" content="2026-02-21T15:00:11.005Z">
+<meta property="article:modified_time" content="2026-02-21T15:48:02.286Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="CPU">
 <meta property="article:tag" content="内存">
@@ -226,7 +226,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.9k 字
+          4.5k 字
         
       </span>
     
@@ -237,7 +237,7 @@
         
         
         
-          33 分钟
+          38 分钟
         
       </span>
     
@@ -379,7 +379,53 @@
 <p>move forward!</p>
 <p>感谢阅读!</p>
 <p>生活愉快…</p>
+<hr>
+<p>补充:</p>
+<p>我觉得有必要补充一下<code>寄存器</code>相关的知识</p>
+<p>掌握了寄存器</p>
+<p>汇编便也不再晦涩难懂(你确定??? (´⊙ω⊙&#96;) )</p>
+<p>我以我熟悉的linux x86-64 为例</p>
+<p>首先，有哪些寄存器?</p>
+<p>1.通用寄存器</p>
+<p>比如</p>
+<p><code>rdi rsi rdx rcx rbx rax r8-r15</code></p>
+<p>用于整数运算，函数参数传递，临时存储等</p>
+<p>2.栈相关寄存器</p>
+<figure class="highlight x86asm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs x86asm"><span class="hljs-built_in">rbp</span> 栈帧基址寄存器<br><span class="hljs-built_in">rsp</span> 栈顶指针寄存器<br></code></pre></td></tr></table></figure>
 
+<p><strong>栈帧</strong></p>
+<p>3.程序计数器</p>
+<p><code>rip</code></p>
+<p>保存下一条即将执行的指令地址</p>
+<p>4.标志寄存器(<code>RFLAGS</code>&#x2F;<code>EFLAGS</code>)</p>
+<p>保存运算结果状态，例如零标志<code>ZF</code>，进位标志<code>CF</code>，溢出标志<code>OF</code>，符号标志<code>SF</code>等等，用于<strong>条件跳转</strong>和ALU决策</p>
+<p>5.浮点与向量寄存器</p>
+<p>涉及二进制浮点数表示，暂时不管</p>
+<p>6.段寄存器</p>
+<p><code>CS DS ES FS GS SS</code></p>
+<p>用于<code>内存段选择</code>，现代用户态程序基本不操作，不管</p>
+<p>7.控制寄存器(CR0–CR4等)</p>
+<p>用于控制CPU工作模式，分页，保护等机制，主要在内核态使用</p>
+<p>8.调试寄存器(DR0–DR7)</p>
+<p>用于硬件断点设置(硬件中断)，gdb的底层原理!</p>
+<p>最后，是一套寄存器调用约定(ABI)</p>
+<ul>
+<li><p>函数前6个整型参数依次放在寄存器 RDI RSI RDX RCX R8 R9</p>
+</li>
+<li><p>caller-saved <code>RAX RCX RDX RSI RDI R8–R11</code></p>
+</li>
+<li><p>callee-saved <code>RBX RBP R12–R15</code></p>
+</li>
+<li><p>返回值放在寄存器 <strong>RAX</strong></p>
+</li>
+<li><p>栈16字节对齐(<strong>RSP</strong>)</p>
+</li>
+</ul>
+<p>熟悉吗孩子们</p>
+<p>哈哈哈哈哈哈哈</p>
+<div class="note note-danger">
+            <p>pwn pwn pwn pwn pwn pwn pwn pwn pwn pwn pwn pwn pwn pwn pwn pwn pwn pwn pwn pwn</p> 
+          </div>
                 
               </div>
             
