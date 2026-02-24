@@ -29,9 +29,9 @@
 <meta property="og:image" content="https://roxy5201314.github.io/images/60.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/61.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/62.png">
-<meta property="og:image" content="https://roxy5201314.github.io/images/62.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/63.png">
 <meta property="article:published_time" content="2026-02-23T13:18:05.000Z">
-<meta property="article:modified_time" content="2026-02-24T05:36:50.416Z">
+<meta property="article:modified_time" content="2026-02-24T06:38:23.667Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="QEMU">
 <meta property="article:tag" content="risc-v">
@@ -241,7 +241,7 @@
         
         
         
-          141 分钟
+          144 分钟
         
       </span>
     
@@ -480,12 +480,30 @@
 <p>并且还拥有了基础的日志打印与错误处理功能~</p>
 <p>有没有感到成就感满满呢 (｡•ㅅ•｡)♡</p>
 <p>最后再梳理一下这整个过程，如图所示</p>
-<p><img src="/images/62.png" srcset="/img/loading.gif" lazyload alt="总结"></p>
+<p><img src="/images/63.png" srcset="/img/loading.gif" lazyload alt="总结"></p>
 <p>下面是项目结构</p>
 <figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs stylus">./os/<span class="hljs-attribute">src</span><br>Rust        <span class="hljs-number">4</span> Files   <span class="hljs-number">119</span> Lines<br>Assembly    <span class="hljs-number">1</span> Files    <span class="hljs-number">11</span> Lines<br><br>├── <span class="hljs-built_in">bootloader</span>(内核依赖的运行在 M 特权级的 SBI 实现，本项目中我们使用 RustSBI)<br>│   └── rustsbi-qemu<span class="hljs-selector-class">.bin</span>(可运行在 qemu 虚拟机上的预编译二进制版本)<br>├── LICENSE<br>├── <span class="hljs-built_in">os</span>(我们的内核实现放在 os 目录下)<br>│   ├── Cargo<span class="hljs-selector-class">.toml</span>(内核实现的一些配置文件)<br>│   ├── Makefile<br>│   └── <span class="hljs-attribute">src</span>(所有内核的源代码放在 os/src 目录下)<br>│       ├── console<span class="hljs-selector-class">.rs</span>(将打印字符的 SBI 接口进一步封装实现更加强大的格式化输出)<br>│       ├── entry<span class="hljs-selector-class">.asm</span>(设置内核执行环境的的一段汇编代码)<br>│       ├── lang_items<span class="hljs-selector-class">.rs</span>(需要我们提供给 Rust 编译器的一些语义项，目前包含内核 panic 时的处理逻辑)<br>│       ├── linker-qemu<span class="hljs-selector-class">.ld</span>(控制内核内存布局的链接脚本以使内核运行在 qemu 虚拟机上)<br>│       ├── <span class="hljs-selector-tag">main</span><span class="hljs-selector-class">.rs</span>(内核主函数)<br>│       └── sbi<span class="hljs-selector-class">.rs</span>(调用底层 SBI 实现提供的 SBI 接口)<br>├── README<span class="hljs-selector-class">.md</span><br>└── <span class="hljs-built_in">rust-toolchain</span>(控制整个项目的工具链版本)<br></code></pre></td></tr></table></figure>
 
 <p>这便是本篇blog的完整内容了…</p>
 <p>感谢阅读!</p>
+<p>补充:</p>
+<p>你可能需要一些前置知识:</p>
+<ul>
+<li>API vs ABI</li>
+<li>what is <strong>os</strong> and its function and history</li>
+<li>the concept of <code>abstract</code>(抽象)</li>
+<li><strong>exception control flow</strong> trap &amp; interrupt &amp; exception</li>
+<li><code>process</code> 进程 线程 context CPU</li>
+<li><strong>I&#x2F;O</strong> file system</li>
+<li>execution environment(执行环境)</li>
+<li><strong>address space</strong> virtual address &amp; physical address <code>MMU</code> memory</li>
+<li><strong>virtualization</strong> CPU &amp; memory &lt;&#x3D;&gt; time &amp; space</li>
+<li><strong>concurrency</strong> 并发 &amp; 并行</li>
+<li><code>异步性</code></li>
+<li><code>共享性</code></li>
+<li><code>持久性</code></li>
+</ul>
+<p>畏惧了…</p>
 
                 
               </div>
