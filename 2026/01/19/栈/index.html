@@ -27,8 +27,9 @@
 <meta property="og:description" content="栈(LIFO)学pwn的看到栈真是惬意啊 不对… 20.有效的括号 解： 后进先出 1234567891011121314151617181920class Solution &#123;public:    bool isValid(string s) &#123;        stack&lt;char&gt; stk;        for(char c : s) &#123;">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://roxy5201314.github.io/images/26.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/67.png">
 <meta property="article:published_time" content="2026-01-19T04:31:58.000Z">
-<meta property="article:modified_time" content="2026-02-11T09:28:24.890Z">
+<meta property="article:modified_time" content="2026-02-27T12:19:31.686Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="LeetCode">
 <meta property="article:tag" content="数据结构">
@@ -227,7 +228,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          625 字
+          1.2k 字
         
       </span>
     
@@ -238,7 +239,7 @@
         
         
         
-          6 分钟
+          11 分钟
         
       </span>
     
@@ -286,6 +287,10 @@
 <p>解：</p>
 <p><code>后进先出</code></p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">isValid</span><span class="hljs-params">(string s)</span> </span>&#123;<br>        stack&lt;<span class="hljs-type">char</span>&gt; stk;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">char</span> c : s) &#123;<br>            <span class="hljs-keyword">if</span>(c == <span class="hljs-string">&#x27;(&#x27;</span> || c == <span class="hljs-string">&#x27;[&#x27;</span> || c == <span class="hljs-string">&#x27;&#123;&#x27;</span>)&#123;<br>                stk.<span class="hljs-built_in">push</span>(c);<br>            &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(c == <span class="hljs-string">&#x27;)&#x27;</span> &amp;&amp; !stk.<span class="hljs-built_in">empty</span>() &amp;&amp; stk.<span class="hljs-built_in">top</span>() == <span class="hljs-string">&#x27;(&#x27;</span>)&#123;<br>                stk.<span class="hljs-built_in">pop</span>();<br>            &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(c == <span class="hljs-string">&#x27;]&#x27;</span> &amp;&amp; !stk.<span class="hljs-built_in">empty</span>() &amp;&amp; stk.<span class="hljs-built_in">top</span>() == <span class="hljs-string">&#x27;[&#x27;</span>)&#123;<br>                stk.<span class="hljs-built_in">pop</span>();<br>            &#125;<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(c == <span class="hljs-string">&#x27;&#125;&#x27;</span> &amp;&amp; !stk.<span class="hljs-built_in">empty</span>() &amp;&amp; stk.<span class="hljs-built_in">top</span>() == <span class="hljs-string">&#x27;&#123;&#x27;</span>)&#123;<br>                stk.<span class="hljs-built_in">pop</span>();<br>            &#125;<span class="hljs-keyword">else</span>&#123;<br>                <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> stk.<span class="hljs-built_in">empty</span>();<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h2 id="155-最小栈"><a href="#155-最小栈" class="headerlink" title="155.最小栈"></a>155.最小栈</h2><p><img src="/images/67.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>解:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MinStack</span> &#123;<br><span class="hljs-keyword">private</span>:<br>    stack&lt;<span class="hljs-type">int</span>&gt; st;<br>    stack&lt;<span class="hljs-type">int</span>&gt; minSt; <br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-built_in">MinStack</span>() &#123;&#125;<br>    <br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">push</span><span class="hljs-params">(<span class="hljs-type">int</span> val)</span> </span>&#123;<br>        st.<span class="hljs-built_in">push</span>(val);<br>        <span class="hljs-keyword">if</span> (minSt.<span class="hljs-built_in">empty</span>() || val &lt;= minSt.<span class="hljs-built_in">top</span>()) &#123;<br>            minSt.<span class="hljs-built_in">push</span>(val);<br>        &#125;<br>    &#125;<br>    <br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">pop</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">if</span>(st.<span class="hljs-built_in">top</span>() == minSt.<span class="hljs-built_in">top</span>()) &#123;<br>            minSt.<span class="hljs-built_in">pop</span>();<br>        &#125;<br>        st.<span class="hljs-built_in">pop</span>();<br>    &#125;<br>    <br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">top</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> st.<span class="hljs-built_in">top</span>();<br>    &#125;<br>    <br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">getMin</span><span class="hljs-params">()</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> minSt.<span class="hljs-built_in">top</span>();<br>    &#125;<br>&#125;;<br><br><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * Your MinStack object will be instantiated and called as such:</span><br><span class="hljs-comment"> * MinStack* obj = new MinStack();</span><br><span class="hljs-comment"> * obj-&gt;push(val);</span><br><span class="hljs-comment"> * obj-&gt;pop();</span><br><span class="hljs-comment"> * int param_3 = obj-&gt;top();</span><br><span class="hljs-comment"> * int param_4 = obj-&gt;getMin();</span><br><span class="hljs-comment"> */</span><br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -353,7 +358,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2026年2月11日</div>
+          <div>2026年2月27日</div>
         </div>
       
       
