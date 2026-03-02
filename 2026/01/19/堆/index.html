@@ -19,18 +19,20 @@
   <meta name="author" content="roxy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="堆我以为是啥呢 结果是一种树??? 插眼…">
+    <meta name="description" content="堆我以为是啥呢 结果是一种树??? 插眼… 小顶堆 priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; pq; 大顶堆 priority_queue&lt;int&gt; pq; 215.数组中的第K个最大元素 第一种想法: 1234567class Solution &#123;public:    int findK">
 <meta property="og:type" content="article">
 <meta property="og:title" content="堆">
 <meta property="og:url" content="https://roxy5201314.github.io/2026/01/19/%E5%A0%86/index.html">
 <meta property="og:site_name" content="roxy&#39;s blog">
-<meta property="og:description" content="堆我以为是啥呢 结果是一种树??? 插眼…">
+<meta property="og:description" content="堆我以为是啥呢 结果是一种树??? 插眼… 小顶堆 priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; pq; 大顶堆 priority_queue&lt;int&gt; pq; 215.数组中的第K个最大元素 第一种想法: 1234567class Solution &#123;public:    int findK">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://roxy5201314.github.io/images/75.png">
 <meta property="article:published_time" content="2026-01-19T04:32:59.000Z">
-<meta property="article:modified_time" content="2026-02-11T09:14:10.778Z">
+<meta property="article:modified_time" content="2026-03-02T13:07:25.420Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="堆">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://roxy5201314.github.io/images/75.png">
   
   
   
@@ -223,7 +225,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          19 字
+          1.3k 字
         
       </span>
     
@@ -234,7 +236,7 @@
         
         
         
-          1 分钟
+          11 分钟
         
       </span>
     
@@ -277,8 +279,31 @@
               <div class="markdown-body">
                 
                 <h1 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h1><p>我以为是啥呢</p>
-<p>结果是一种树???</p>
+<p>结果是一种<strong>树</strong>???</p>
 <p>插眼…</p>
+<p><em>小顶堆</em></p>
+<p><code>priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; pq;</code></p>
+<p><em>大顶堆</em></p>
+<p><code>priority_queue&lt;int&gt; pq;</code></p>
+<h2 id="215-数组中的第K个最大元素"><a href="#215-数组中的第K个最大元素" class="headerlink" title="215.数组中的第K个最大元素"></a>215.数组中的第K个最大元素</h2><p><img src="/images/75.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>第一种想法:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">findKthLargest</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums, <span class="hljs-type">int</span> k)</span> </span>&#123;<br>        <span class="hljs-built_in">sort</span>(nums.<span class="hljs-built_in">begin</span>(), nums.<span class="hljs-built_in">end</span>());<br>        <span class="hljs-keyword">return</span> nums[nums.<span class="hljs-built_in">size</span>() - k];<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>时间复杂度$O(n \log n)$</p>
+<p>空间复杂度$O(1)$(忽略sort的栈)</p>
+<p>解法2:</p>
+<p><strong>小顶堆</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">findKthLargest</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums, <span class="hljs-type">int</span> k)</span> </span>&#123;<br>        priority_queue&lt;<span class="hljs-type">int</span>, vector&lt;<span class="hljs-type">int</span>&gt;, greater&lt;<span class="hljs-type">int</span>&gt;&gt; pq;<br><br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> x : nums) &#123;<br>            pq.<span class="hljs-built_in">push</span>(x);<br>            <span class="hljs-keyword">if</span>(pq.<span class="hljs-built_in">size</span>() &gt; k) &#123;<br>                pq.<span class="hljs-built_in">pop</span>();<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> pq.<span class="hljs-built_in">top</span>();<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>时间复杂度$O(n \log k)$</p>
+<p>空间复杂度$O(k)$</p>
+<p>解法3:</p>
+<p>分治 + 快排</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">findKthLargest</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums, <span class="hljs-type">int</span> k)</span> </span>&#123;<br>        <span class="hljs-type">int</span> target = nums.<span class="hljs-built_in">size</span>() - k;<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">quickSelect</span>(nums, <span class="hljs-number">0</span>, nums.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>, target);<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">quickSelect</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r, <span class="hljs-type">int</span> target)</span> </span>&#123;<br>        <span class="hljs-type">int</span> pivot = nums[l];<br>        <span class="hljs-type">int</span> i = l, j = r;<br>        <span class="hljs-keyword">while</span> (i &lt; j) &#123;<br>            <span class="hljs-keyword">while</span> (i &lt; j &amp;&amp; nums[j] &gt;= pivot) &#123;<br>                j--;<br>            &#125;<br>            nums[i] = nums[j];<br>            <span class="hljs-keyword">while</span> (i &lt; j &amp;&amp; nums[i] &lt;= pivot) &#123;<br>                i++;<br>            &#125;<br>            nums[j] = nums[i];<br>        &#125;<br>        <br>        nums[i] = pivot;<br><br>        <span class="hljs-keyword">if</span> (i == target)<br>            <span class="hljs-keyword">return</span> nums[i];<br>        <span class="hljs-keyword">if</span> (i &lt; target)<br>            <span class="hljs-keyword">return</span> <span class="hljs-built_in">quickSelect</span>(nums, i + <span class="hljs-number">1</span>, r, target);<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">quickSelect</span>(nums, l, i - <span class="hljs-number">1</span>, target);<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<p>期望时间复杂度为$O(n)$</p>
+<p>但是我直接超时了</p>
+<p>哈哈哈哈哈</p>
 
                 
               </div>
@@ -343,7 +368,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2026年2月11日</div>
+          <div>2026年3月2日</div>
         </div>
       
       
