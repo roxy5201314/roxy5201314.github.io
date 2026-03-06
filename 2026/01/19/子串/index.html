@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://roxy5201314.github.io/images/58.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/72.png">
 <meta property="article:published_time" content="2026-01-19T04:34:00.000Z">
-<meta property="article:modified_time" content="2026-03-02T09:00:30.405Z">
+<meta property="article:modified_time" content="2026-03-06T04:21:31.649Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="LeetCode">
 <meta property="article:tag" content="子串">
@@ -308,6 +308,8 @@
 <p>因为要寻找的最小窗口，即最优解，往往产生在约束刚刚被破坏的前一刻，所以刻意的破坏是必要的!</p>
 <p>解:</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function">string <span class="hljs-title">minWindow</span><span class="hljs-params">(string s, string t)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span>(t.<span class="hljs-built_in">size</span>() &gt; s.<span class="hljs-built_in">size</span>()) <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span>;<br><br>        unordered_map&lt;<span class="hljs-type">char</span>, <span class="hljs-type">int</span>&gt; need, window;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">char</span> c : t) need[c]++;<br><br>        <span class="hljs-type">int</span> left = <span class="hljs-number">0</span>, right = <span class="hljs-number">0</span>;<br>        <span class="hljs-type">int</span> valid = <span class="hljs-number">0</span>;<br><br>        <span class="hljs-type">int</span> start = <span class="hljs-number">0</span>;<br>        <span class="hljs-type">int</span> len = INT_MAX;<br><br>        <span class="hljs-keyword">while</span>(right &lt; s.<span class="hljs-built_in">size</span>()) &#123;<br>            <span class="hljs-type">char</span> c = s[right];<br>            right++;<br><br>            <span class="hljs-comment">// 扩张窗口</span><br>            <span class="hljs-keyword">if</span>(need.<span class="hljs-built_in">count</span>(c)) &#123;<br>                window[c]++;<br>                <span class="hljs-keyword">if</span>(window[c] == need[c]) &#123;<br>                    valid++;<br>                &#125;<br>            &#125;<br><br>            <span class="hljs-comment">// 收缩窗口</span><br>            <span class="hljs-keyword">while</span>(valid == need.<span class="hljs-built_in">size</span>()) &#123;<br>                <span class="hljs-keyword">if</span>(right - left &lt; len) &#123;<br>                    start = left;<br>                    len = right - left;<br>                &#125;<br><br>                <span class="hljs-type">char</span> d = s[left];<br>                left++;<br><br>                <span class="hljs-keyword">if</span>(need.<span class="hljs-built_in">count</span>(d)) &#123;<br>                    <span class="hljs-keyword">if</span>(window[d] == need[d]) &#123;<br>                        valid--;<br>                    &#125;<br>                    window[d]--;<br>                &#125;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> len == INT_MAX ? <span class="hljs-string">&quot;&quot;</span> : s.<span class="hljs-built_in">substr</span>(start, len);<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+
                 
               </div>
             
@@ -373,7 +375,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2026年3月2日</div>
+          <div>2026年3月6日</div>
         </div>
       
       
