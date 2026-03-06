@@ -20,7 +20,13 @@
     
     <tags>
       
+      <tag>堆</tag>
+      
       <tag>排序算法</tag>
+      
+      <tag>分治</tag>
+      
+      <tag>快排</tag>
       
     </tags>
     
@@ -842,9 +848,9 @@
     
     <tags>
       
-      <tag>ret2GOT</tag>
-      
       <tag>fmt</tag>
+      
+      <tag>ret2GOT</tag>
       
     </tags>
     
