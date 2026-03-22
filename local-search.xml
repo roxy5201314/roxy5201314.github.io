@@ -408,9 +408,9 @@
       
       <tag>LeetCode</tag>
       
-      <tag>数据结构</tag>
-      
       <tag>二叉树</tag>
+      
+      <tag>数据结构</tag>
       
     </tags>
     
@@ -541,11 +541,11 @@
       
       <tag>LeetCode</tag>
       
-      <tag>算法</tag>
-      
       <tag>异或</tag>
       
       <tag>trick</tag>
+      
+      <tag>算法</tag>
       
     </tags>
     
@@ -626,9 +626,9 @@
       
       <tag>LeetCode</tag>
       
-      <tag>栈</tag>
-      
       <tag>数据结构</tag>
+      
+      <tag>栈</tag>
       
     </tags>
     
@@ -655,9 +655,9 @@
       
       <tag>LeetCode</tag>
       
-      <tag>双指针</tag>
-      
       <tag>数据结构</tag>
+      
+      <tag>双指针</tag>
       
       <tag>链表</tag>
       
@@ -686,9 +686,9 @@
       
       <tag>LeetCode</tag>
       
-      <tag>双指针</tag>
-      
       <tag>算法</tag>
+      
+      <tag>双指针</tag>
       
     </tags>
     
@@ -879,9 +879,9 @@
     
     <tags>
       
-      <tag>fmt</tag>
-      
       <tag>ret2GOT</tag>
+      
+      <tag>fmt</tag>
       
     </tags>
     
@@ -921,7 +921,7 @@
     <link href="/2025/12/25/hello-pwn/"/>
     <url>/2025/12/25/hello-pwn/</url>
     
-    <content type="html"><![CDATA[<p>为什么写blog?</p><p>为什么打ctf?</p><p>为什么选择pwn?</p><p>鬼知道</p><p>也许是无聊吧</p><p>用此博客来记录我在<code>pwn</code>学习过程中的一些题解与思考</p><p>希望你能有所收获…</p><p>ps:自言自语</p><p>bro以为自己是网红blogger</p><p>实则静态博客闹麻了</p><p>不过写给以后的自己看似乎也不错???</p><hr><p>modification:</p><p>于2026.1.1</p><p>最近学习了一些栈漏洞</p><p>本打算继续学堆</p><p>但是我要先摆几天</p><p>期末还没复习</p><p>不重要了</p><p>最讨厌的就是卷成绩这种事</p><p>最后</p><p>不止于pwn</p><p>move forward!</p><p>patience is key in life…</p><p>ps:大一上</p><hr><p>补充:</p><p>2026.2.2</p><p>随记</p><p>不知道干嘛</p><p>还是奉行我的人生信条吧</p><p>做自己想做的!</p><p>我感觉的coding能力似乎也太差了，有点过于依赖ai了…</p><p>关于怎么提升也没有什么头绪，也许需要学点数据结构与算法?</p><p>还是做一些项目？</p><p>都试试吧</p><p>尝试新的事物总是很有趣</p><p>顺便借着pwn补补os和计组</p><p>misc osint web crypto reverse嘛</p><p>看看就好</p><p>主要还是没有pwn的那种谜之魅力</p><p>不过我还是太贪玩了</p><p>虽说做出算法题 or pwn题的即时反馈之乐趣也很诱人</p><p>但终究有一定的<code>时间成本</code></p><p>而手机这种低成本的娱乐方式太难以抵抗了!</p><p>不过这也是生活啊~</p><p>最近还和高中同学reunion</p><p>仿佛回到了那个无忧无虑的高三…</p><p>大概就是这样吧</p><p>现在是大一上的寒假</p><p>多年后的我</p><p>祝你看到这些的时候坚守初心</p><p>但也天天开心</p><p>有点唐</p><p>不过</p><p>确实挺不错的</p>]]></content>
+    <content type="html"><![CDATA[<p>为什么写blog?</p><p>为什么打ctf?</p><p>为什么选择pwn?</p><p>鬼知道</p><p>也许是无聊吧</p><p>用此博客来记录我在<code>pwn</code>学习过程中的一些题解与思考</p><p>希望你能有所收获…</p><p>ps:自言自语</p><p>bro以为自己是网红blogger</p><p>实则静态博客闹麻了</p><p>不过写给以后的自己看似乎也不错???</p><hr><p>modification:</p><p>于2026.1.1</p><p>最近学习了一些栈漏洞</p><p>本打算继续学堆</p><p>但是我要先摆几天</p><p>期末还没复习</p><p>不重要了</p><p>最讨厌的就是卷成绩这种事</p><p>最后</p><p>不止于pwn</p><p>move forward!</p><p>patience is key in life…</p><p>ps:大一上</p><hr><p>补充:</p><p>2026.2.2</p><p>随记</p><p>不知道干嘛</p><p>还是奉行我的人生信条吧</p><p>做自己想做的!</p><p>我感觉的coding能力似乎也太差了，有点过于依赖ai了…</p><p>关于怎么提升也没有什么头绪，也许需要学点数据结构与算法?</p><p>还是做一些项目？</p><p>都试试吧</p><p>尝试新的事物总是很有趣</p><p>顺便借着pwn补补os和计组</p><p>misc osint web crypto reverse嘛</p><p>看看就好</p><p>主要还是没有pwn的那种谜之魅力</p><p>不过我还是太贪玩了</p><p>虽说做出算法题 or pwn题的即时反馈之乐趣也很诱人</p><p>但终究有一定的<code>时间成本</code></p><p>而手机这种低成本的娱乐方式太难以抵抗了!</p><p>不过这也是生活啊~</p><p>最近还和高中同学reunion</p><p>仿佛回到了那个无忧无虑的高三…</p><p>大概就是这样吧</p><p>现在是大一上的寒假</p><p>多年后的我</p><p>祝你看到这些的时候坚守初心</p><p>但也天天开心</p><p>有点唐</p><p>不过</p><p>确实挺不错的</p><hr><p>2026.3.22</p><p>转折点?(bushi)</p><p>深刻意识到了自己的<strong>渺小</strong></p><p>上周打了一场比较高水平的比赛<code>SUCTF</code>(应该算吧)</p><p>好难啊…</p><p>一道题也没做出来</p><p>可恶啊</p><p>网上关于AI的言论也不可谓不让人焦虑</p><p>也许我要调整一下<code>学习策略</code>了?</p><p>我有一些自己的思考</p><p>但先不写下来了</p><p>先行动起来吧</p><p>路漫漫其修远兮</p><p>吾将上下而求索</p><p>…</p><p>加油!</p><hr>]]></content>
     
     
     <categories>
