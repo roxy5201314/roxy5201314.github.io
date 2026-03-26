@@ -19,23 +19,25 @@
   <meta name="author" content="roxy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="OS随记仅用以记录一下自己学习的一些操作系统内容 因为我每次学完就忘了 所以打下来 也许能加深记忆? 仅供参考… 进程与线程Unix进程控制接口fork() -&gt; 创建子进程 复制当前进程，生成一个几乎完全相同的子进程，父进程返回子进程PID，子进程返回0 123456pid_t pid &#x3D; fork();if (pid &#x3D;&#x3D; 0) &#123;    printf(&quot;I am t">
+    <meta name="description" content="OS随记额 感觉学的东西还是太乱了 没有体系化 仅用以记录一下自己学习的一些操作系统内容 因为我每次学完就忘了 所以打下来 也许能加深记忆? 仅供参考…              部分由ai生成 部分为自己的理解              进程与线程Unix进程控制接口优雅(Windows😄) fork() -&gt; 创建子进程 复制当前进程，生成一个几乎完全相同的子进程，父进程返回子进程PI">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OS随记">
 <meta property="og:url" content="https://roxy5201314.github.io/2026/03/25/OS%E9%9A%8F%E8%AE%B0/index.html">
 <meta property="og:site_name" content="roxy&#39;s blog">
-<meta property="og:description" content="OS随记仅用以记录一下自己学习的一些操作系统内容 因为我每次学完就忘了 所以打下来 也许能加深记忆? 仅供参考… 进程与线程Unix进程控制接口fork() -&gt; 创建子进程 复制当前进程，生成一个几乎完全相同的子进程，父进程返回子进程PID，子进程返回0 123456pid_t pid &#x3D; fork();if (pid &#x3D;&#x3D; 0) &#123;    printf(&quot;I am t">
+<meta property="og:description" content="OS随记额 感觉学的东西还是太乱了 没有体系化 仅用以记录一下自己学习的一些操作系统内容 因为我每次学完就忘了 所以打下来 也许能加深记忆? 仅供参考…              部分由ai生成 部分为自己的理解              进程与线程Unix进程控制接口优雅(Windows😄) fork() -&gt; 创建子进程 复制当前进程，生成一个几乎完全相同的子进程，父进程返回子进程PI">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://roxy5201314.github.io/images/94.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/93.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/95.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/91.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/92.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/pipe.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/4.jpg">
 <meta property="og:image" content="https://roxy5201314.github.io/images/96.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/97.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/90.png">
 <meta property="article:published_time" content="2026-03-25T10:54:36.000Z">
-<meta property="article:modified_time" content="2026-03-25T12:23:15.080Z">
+<meta property="article:modified_time" content="2026-03-26T05:55:56.562Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="I&#x2F;O">
 <meta property="article:tag" content="内存管理">
@@ -250,7 +252,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.2k 字
+          5.1k 字
         
       </span>
     
@@ -261,7 +263,7 @@
         
         
         
-          28 分钟
+          43 分钟
         
       </span>
     
@@ -303,12 +305,20 @@
             
               <div class="markdown-body">
                 
-                <h1 id="OS随记"><a href="#OS随记" class="headerlink" title="OS随记"></a>OS随记</h1><p>仅用以记录一下自己学习的一些操作系统内容</p>
+                <h1 id="OS随记"><a href="#OS随记" class="headerlink" title="OS随记"></a>OS随记</h1><p>额</p>
+<p>感觉学的东西还是太乱了</p>
+<p>没有<code>体系化</code></p>
+<p>仅用以记录一下自己学习的一些操作系统内容</p>
 <p>因为我每次学完就忘了</p>
 <p>所以打下来</p>
 <p>也许能加深记忆?</p>
 <p>仅供参考…</p>
-<h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><h3 id="Unix进程控制接口"><a href="#Unix进程控制接口" class="headerlink" title="Unix进程控制接口"></a>Unix进程控制接口</h3><p><code>fork()</code> -&gt; 创建子进程</p>
+<div class="note note-danger">
+            <p>部分由<code>ai</code>生成</p> <p>部分为自己的理解</p> 
+          </div>
+
+<h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><h3 id="Unix进程控制接口"><a href="#Unix进程控制接口" class="headerlink" title="Unix进程控制接口"></a>Unix进程控制接口</h3><p>优雅(Windows😄)</p>
+<p><code>fork()</code> -&gt; 创建子进程</p>
 <p>复制当前进程，生成一个几乎完全相同的子进程，父进程返回子进程<code>PID</code>，子进程返回0</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">pid_t</span> pid = fork();<br><span class="hljs-keyword">if</span> (pid == <span class="hljs-number">0</span>) &#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;I am the child\n&quot;</span>);<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;I am the parent, child pid=%d\n&quot;</span>, pid);<br>&#125;<br></code></pre></td></tr></table></figure>
 
@@ -397,24 +407,62 @@
 </ul>
 <h3 id="进程间通信"><a href="#进程间通信" class="headerlink" title="进程间通信"></a>进程间通信</h3><p>进程各自拥有独立的地址空间，数据不共享，因此操作系统需要提供专门的机制以实现进程间通信，开销相对较大</p>
 <p>1.管道(pipe)</p>
+<p><img src="/images/pipe.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <p>分<code>匿名管道</code>(父子进程间，单向)和<code>命名管道</code>(无亲缘关系进程间，支持双向)</p>
+<p><strong>匿名管道</strong></p>
+<p>示例:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">grep <span class="hljs-string">&quot;error&quot;</span> log.txt | less<br></code></pre></td></tr></table></figure>
+
+<p><code>grep</code>进程的输出没有直接打印到屏幕，而是流入<code>less</code>进程作为输入</p>
+<p><strong>管道</strong>其实是内核在内存中开辟的一块固定大小的<code>缓冲区</code>(通常4KB or 64KB)</p>
+<p>写端:一个进程将数据写入这块缓冲区</p>
+<p>读端:另一个进程从缓冲区读取数据</p>
+<p>单向流动:数据严格从写端流向读端</p>
+<p>管道没有文件名，它不像普通文件那样有<code>inode</code>和路径，匿名管道通过<code>fork()</code>机制继承给父子进程，所以只能在有亲缘关系的进程间使用</p>
+<p>同时，如果读端读取时，管道为空，读操作会<code>阻塞</code>，直到有数据写入</p>
+<p>如果写端写入时，管道满了，写操作也会阻塞，直到有人读走数据</p>
+<p>这种机制天然实现了进程间的<code>同步</code>，不需要额外加<strong>锁</strong></p>
+<p><strong>命名管道</strong></p>
+<p>为了给无亲缘关系的进程通信，还有命名管道(<code>FIFO</code>)</p>
+<p>它在磁盘上有一个特殊的文件(使用<code>ls</code>可以看到)，但这个文件只作为<code>入口</code>，数据依然在<code>内存</code>中流转，不会落盘~</p>
 <p>2.消息队列</p>
+<p><img src="/images/4.jpg" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <p>通过内核维护的消息链表传递数据块，有格式边界，适合小数据量<code>异步</code>通信</p>
+<p>每条消息是一个独立的单元，有类型，有长度</p>
+<p>发送方放入一条消息，接收方按类型或按顺序整条取出，天然有<strong>边界</strong></p>
+<p>发送方把消息放进<code>队列</code>后就可以离开，接收方可以稍后再取</p>
+<p>消息由<code>内核</code>管理，即使接收方暂时没运行，消息也暂存在队列中，实现时间上的<strong>解耦</strong></p>
+<p><strong>灵活</strong>，消息队列有<code>标识符</code>，多个进程可以打开同一个队列，发送时可以指定消息类型，接收方可以只取特定类型的消息</p>
+<p>同时消息队列由<strong>内核</strong>持久化，除非显式删除或系统重启，否则一直存在</p>
+<p>这允许进程间跨越<code>生命周期</code>的通信</p>
 <p>3.共享内存</p>
-<p>效率最高的方式，将同一块物理内存映射到不同进程的虚拟地址空间，数据无需复制，但本身不带同步机制，通常需配合信号量使用</p>
+<p>效率最高的方式，将同一块<code>物理内存</code>映射到不同进程的<code>虚拟地址空间</code>，数据无需复制，但本身不带同步机制，通常需配合信号量使用</p>
+<p><strong>零拷贝</strong></p>
 <p>4.信号量</p>
 <p>一个计数器，用于控制多进程对共享资源的访问，常与共享内存搭配实现<code>同步</code></p>
 <p>5.信号</p>
 <p>异步通知机制(如SIGKILL强制终止)，用于告知进程发生了某事件，处理逻辑复杂</p>
-<p>6.Socket</p>
+<p>6.Socket(套接字)</p>
 <p>最灵活的方式，支持跨机通信(如<code>网络编程</code>)，也可用于本机进程通信(Unix Domain Socket)</p>
+<p><code>Socket</code>是一个抽象的编程接口，由操作系统提供</p>
+<p>其设计哲学是<code>网络也是文件</code></p>
+<p>Unix:一切皆文件😎</p>
+<p>你创建一个Socket，系统返回一个<strong>文件描述符</strong></p>
+<p>收发数据时，用read&#x2F;write或专用的send&#x2F;recv，操作方式和读写文件非常相似</p>
+<p>区别在于，普通文件读写的是磁盘数据，Socket读写的是<code>网络数据包</code></p>
+<p>通过<code>IP地址</code>和<code>端口号</code>定位对方的进程</p>
+<p>支持TCP和UDP</p>
+<div class="note note-info">
+            <p>模型:</p> <p>服务端:</p> <p>socket() 创建套接字</p> <p>bind() 绑定IP和端口</p> <p>listen() 进入监听状态，等待客户端连接</p> <p>accept() 接受一个客户端连接，返回一个新的套接字用于通信</p> <p>read() &#x2F; write() 收发数据</p> <p>close() 关闭连接</p> <p>客户端:</p> <p>socket() 创建套接字</p> <p>connect() 连接到服务器的IP和端口</p> <p>read() &#x2F; write() 收发数据</p> <p>close() 关闭连接</p> 
+          </div>
+
 <h3 id="线程间通信"><a href="#线程间通信" class="headerlink" title="线程间通信"></a>线程间通信</h3><p>1.共享变量</p>
 <p>最简单直接的方式，但必须配合同步机制防止数据竞争</p>
-<p>2.互斥锁</p>
+<p>2.<code>互斥锁</code></p>
 <p>保护<strong>临界区</strong>，保证同一时刻只有一个线程访问资源</p>
-<p>3.读写锁</p>
+<p>3.<code>读写锁</code></p>
 <p>允许多个读线程并发，但写线程独占</p>
-<p>4.条件变量</p>
+<p>4.<strong>条件变量</strong></p>
 <p>常与互斥锁配合，用于让线程在某个条件满足时(如队列非空)再继续执行，实现等待&#x2F;通知机制</p>
 <p>5.信号量</p>
 <p>与进程间类似，但通常用于线程计数同步</p>
@@ -439,7 +487,40 @@
 <p>读取<code>/proc</code>目录下每个PID目录 -&gt; 解析信息 -&gt; 排版输出</p>
 <p><img src="/images/97.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <h2 id="调度与并发"><a href="#调度与并发" class="headerlink" title="调度与并发"></a>调度与并发</h2><h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p><img src="/images/90.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
-<h2 id="文件系统与I-O"><a href="#文件系统与I-O" class="headerlink" title="文件系统与I&#x2F;O"></a>文件系统与I&#x2F;O</h2>
+<h2 id="文件系统与I-O"><a href="#文件系统与I-O" class="headerlink" title="文件系统与I&#x2F;O"></a>文件系统与I&#x2F;O</h2><h3 id="inode"><a href="#inode" class="headerlink" title="inode"></a>inode</h3><p><code>inode</code>不是<code>文件名</code>，而是文件在磁盘上的<strong>元数据索引节点</strong></p>
+<p>文件名和<code>inode</code>是一一对应的关系(硬链接除外😠)</p>
+<p>操作系统通过文件名找到inode号，再通过inode找到散落在磁盘各处的数据块</p>
+<h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h3><h4 id="硬链接"><a href="#硬链接" class="headerlink" title="硬链接"></a>硬链接</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">ln</span> 源文件 硬链接名    <span class="hljs-comment"># 创建硬链接</span><br></code></pre></td></tr></table></figure>
+
+<p>硬链接的本质是多个文件名指向同一个inode</p>
+<p>在文件系统中，inode才是文件的<code>本体</code></p>
+<p>当你创建一个硬链接时，并没有创建新文件，只是给这个inode多贴了一个标签</p>
+<p>系统维护一个<code>链接计数</code>，记录有多少个文件名指向这个inode</p>
+<p>因此修改任意一个文件名下的内容，其它文件名下看到的内容都会变(因为其实是同一份数据)</p>
+<p>删除原文件时，文件并不会被真正删除，只是链接计数减1</p>
+<p>只有当计数归零时，磁盘空间才会被释放~</p>
+<h4 id="软链接"><a href="#软链接" class="headerlink" title="软链接"></a>软链接</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">ln</span> -s 源文件 软链接名  <span class="hljs-comment"># 创建软链接</span><br></code></pre></td></tr></table></figure>
+
+<p>软链接(符号链接)是一个独立的文件，它有自己的inode，但这个文件的内容是另一个文件的路径</p>
+<p>自己的理解:</p>
+<p>其实可以把它看作一个<code>指针</code>?</p>
+<p>操作系统读取软链接时，会<code>重定向</code>到它所指向的路径去读取真正的文件~</p>
+<p>因此修改软链接的内容，实际上就是在修改原文件的内容</p>
+<p>而如果删除了原文件，软链接依然存在，但它会失效，变成一个<code>悬空链接</code>(<strong>dangling pointer</strong>😄)</p>
+<h3 id="I-O"><a href="#I-O" class="headerlink" title="I&#x2F;O"></a>I&#x2F;O</h3><p>I&#x2F;O(Input&#x2F;Output)是<code>内存</code>与<code>外设</code>(磁盘，网卡，键盘等)之间的数据拷贝过程</p>
+<p>从CPU的视角来看，IO很慢😭</p>
+<p>于是为了效率，操作系统引入了分层机制:</p>
+<p><code>阻塞</code>与<code>非阻塞</code>:</p>
+<p><strong>阻塞</strong>:你发出读文件指令后，什么也不干，眼巴巴等着数据从磁盘加载到内存😅</p>
+<p><strong>非阻塞</strong>:你发出指令后，先去做别的事，过一会再来问数据好了没</p>
+<p><code>同步</code>与<code>异步</code>:</p>
+<p><strong>同步</strong>:你自己盯着数据从内核拷贝到你的程序里</p>
+<p><strong>异步</strong>:你告诉系统数据好了直接放我门口，放完了叫我，中间完全不用管!</p>
+<p><strong>性能</strong>的关键:</p>
+<p>IO的<code>瓶颈</code>通常在于等待(磁盘寻道或网络延迟)和拷贝(数据在用户空间和内核空间之间来回复制)</p>
+<p>高性能系统设计(如<code>epoll</code>，零拷贝)都是为了减少这两者的开销…</p>
+<p>待补充…</p>
+
                 
               </div>
             
@@ -515,7 +596,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2026年3月25日</div>
+          <div>2026年3月26日</div>
         </div>
       
       
