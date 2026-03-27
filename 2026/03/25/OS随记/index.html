@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://roxy5201314.github.io/images/97.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/90.png">
 <meta property="article:published_time" content="2026-03-25T10:54:36.000Z">
-<meta property="article:modified_time" content="2026-03-26T16:24:38.152Z">
+<meta property="article:modified_time" content="2026-03-27T05:33:23.371Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="I&#x2F;O">
 <meta property="article:tag" content="内存管理">
@@ -252,7 +252,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.7k 字
+          7k 字
         
       </span>
     
@@ -263,7 +263,7 @@
         
         
         
-          48 分钟
+          59 分钟
         
       </span>
     
@@ -425,7 +425,7 @@
 <li><p><strong>资源敏感场景</strong>，如果需要创建成千上万个执行单元，线程占用的内存和创建开销远小于进程…</p>
 </li>
 </ul>
-<h3 id="进程间通信"><a href="#进程间通信" class="headerlink" title="进程间通信"></a>进程间通信</h3><p>进程各自拥有独立的地址空间，数据不共享，因此操作系统需要提供专门的机制以实现进程间通信，开销相对较大</p>
+<h3 id="进程间通信-IPC"><a href="#进程间通信-IPC" class="headerlink" title="进程间通信(IPC)"></a>进程间通信(IPC)</h3><p>进程各自拥有独立的地址空间，数据不共享，因此操作系统需要提供专门的机制以实现进程间通信，开销相对较大</p>
 <p>1.管道(pipe)</p>
 <p><img src="/images/pipe.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <p>分<code>匿名管道</code>(父子进程间，单向)和<code>命名管道</code>(无亲缘关系进程间，支持双向)</p>
@@ -476,6 +476,10 @@
             <p>模型:</p> <p>服务端:</p> <p>socket() 创建套接字</p> <p>bind() 绑定IP和端口</p> <p>listen() 进入监听状态，等待客户端连接</p> <p>accept() 接受一个客户端连接，返回一个新的套接字用于通信</p> <p>read() &#x2F; write() 收发数据</p> <p>close() 关闭连接</p> <p>客户端:</p> <p>socket() 创建套接字</p> <p>connect() 连接到服务器的IP和端口</p> <p>read() &#x2F; write() 收发数据</p> <p>close() 关闭连接</p> 
           </div>
 
+<p>ai的胡言乱语?</p>
+<p>微服务架构本质上是把进程间通信变成了网络通信?</p>
+<p>Redis用Unix Domain Socket比TCP快?</p>
+<p>gRPC是进程间通信的现代解决方案?</p>
 <h3 id="线程间通信"><a href="#线程间通信" class="headerlink" title="线程间通信"></a>线程间通信</h3><p>1.共享变量</p>
 <p>最简单直接的方式，但必须配合同步机制防止数据竞争</p>
 <p>2.<code>互斥锁</code></p>
@@ -506,7 +510,58 @@
 <p>本质:</p>
 <p>读取<code>/proc</code>目录下每个PID目录 -&gt; 解析信息 -&gt; 排版输出</p>
 <p><img src="/images/97.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
-<h2 id="调度与并发"><a href="#调度与并发" class="headerlink" title="调度与并发"></a>调度与并发</h2><h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p><img src="/images/90.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<h3 id="僵尸进程-孤儿进程"><a href="#僵尸进程-孤儿进程" class="headerlink" title="僵尸进程&amp;孤儿进程"></a>僵尸进程&amp;孤儿进程</h3><p><strong>僵尸进程</strong>:子进程退出后父进程未回收</p>
+<p>当一个进程结束(调用exit或被信号终止)，它会释放大部分资源(内存，文件描述符等)，但内核会保留一个最小的数据结构，即进程控制块(PCB)中的进程描述符</p>
+<p>其中包含进程ID(PID)，退出状态，运行时间等信息，直到父进程通过<code>wait</code>或<code>waitpid</code>读取它的退出状态</p>
+<p>因此在父进程读取之前，这个进程就处于<code>僵尸状态</code></p>
+<div class="note note-success">
+            <p>ps aux | grep Z 找僵尸进程</p> 
+          </div>
+
+<p>此时子进程已退出但父进程没调用wait()，PCB还挂着</p>
+<p>僵尸进程不占用内存，CPU，只占用PCB中极小的内存(通常几十字节)</p>
+<p>但僵尸进程的PID会被保留，如果大量僵尸进程积累，可能会耗尽PID资源，导致新进程无法创建</p>
+<p>且无法通过<code>kill -9</code>杀死僵尸进程，因为它已经死了😭，唯一的方法是终止其父进程，让init(PID 1)接管并wait…</p>
+<p><strong>孤儿进程</strong>:父进程先于子进程退出(orphan)</p>
+<p>当一个父进程比子进程先终止时，该子进程就变成了孤儿进程</p>
+<p>它没有父进程，会被系统的init进程(PID 1)或<code>subreaper</code>进程自动收养</p>
+<p><code>init</code>会周期性调用<code>wait</code>，因此孤儿进程终止时不会变成僵尸，会被自动回收</p>
+<p>本身没有危害，是正常的设计~</p>
+<p>为什么Docker容器里要用init进程?</p>
+<h2 id="调度与并发"><a href="#调度与并发" class="headerlink" title="调度与并发"></a>调度与并发</h2><h3 id="CPU调度算法"><a href="#CPU调度算法" class="headerlink" title="CPU调度算法"></a>CPU调度算法</h3><p><code>FCFS</code>(先来先服务):简单但长任务饿死短任务</p>
+<p><code>SJF</code>(短作业优先):平均等待时间最短但可能饿死长任务</p>
+<p><code>Round Robin</code>(时间片轮转):最公平，Linux默认</p>
+<p><code>多级反馈队列</code>:新进程进高优先级队列，运行太久降级，兼顾响应速度和吞吐量</p>
+<p>Linux的CFS调度器，Nginx的工作进程调度，Go的goroutine调度器都是这些思想的变体?</p>
+<p>个人感觉此处无需多言</p>
+<p>略</p>
+<h3 id="竞态条件-Race-Condition"><a href="#竞态条件-Race-Condition" class="headerlink" title="竞态条件(Race Condition)"></a>竞态条件(Race Condition)</h3><p>多线程对共享资源的访问顺序影响结果</p>
+<p>例子:</p>
+<p>两个线程同时执行<code>x = x + 1</code></p>
+<p>读到同一个旧值，各自加1后写回，结果只加了1次…</p>
+<p>竞态条件的可怕之处是它大多数时候不出现，偶尔才触发，极难复现</p>
+<p>思考…😟</p>
+<h3 id="互斥锁-Mutex-自旋锁"><a href="#互斥锁-Mutex-自旋锁" class="headerlink" title="互斥锁(Mutex)&#x2F;自旋锁"></a>互斥锁(Mutex)&#x2F;自旋锁</h3><p>保护共享资源的基本同步原语</p>
+<p>Mutex:拿不到锁就睡眠，让出CPU，等待唤醒</p>
+<p>自旋锁:拿不到锁就一直循环检查(忙等待)，不让出CPU</p>
+<p>短临界区就用自旋锁(避免睡眠唤醒开销)</p>
+<p>长临界区则用Mutex(避免浪费CPU)</p>
+<p>Linux内核大量使用自旋锁</p>
+<p><code>Java synchronized</code>用的是对象内置的Monitor锁?</p>
+<p>为什么持有自旋锁时不能调用可能睡眠的函数?</p>
+<p>数据库的行锁是Mutex?</p>
+<h3 id="死锁-Deadlock"><a href="#死锁-Deadlock" class="headerlink" title="死锁(Deadlock)"></a>死锁(Deadlock)</h3><p>多个进程互相等待对方持有的资源，永远无法推进</p>
+<p>死锁成立必须同时满足四个条件:</p>
+<p>1.互斥(资源不能共享)</p>
+<p>2.持有并等待(拿着A等B)</p>
+<p>3.不可抢占(不能强夺资源)</p>
+<p>4.循环等待(A等B，B等A)</p>
+<p>破坏任意一个条件即可预防死锁</p>
+<p><code>银行家算法</code>可以动态避免死锁</p>
+<p>实际系统多用死锁检测+超时重试…</p>
+<p>数据库死锁排查?</p>
+<p>分布式系统的分布式锁设计?</p>
+<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p><img src="/images/90.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <h2 id="文件系统与I-O"><a href="#文件系统与I-O" class="headerlink" title="文件系统与I&#x2F;O"></a>文件系统与I&#x2F;O</h2><h3 id="inode"><a href="#inode" class="headerlink" title="inode"></a>inode</h3><p><code>inode</code>不是<code>文件名</code>，而是文件在磁盘上的<strong>元数据索引节点</strong></p>
 <p>文件名和<code>inode</code>是一一对应的关系(硬链接除外😠)</p>
 <p>操作系统通过文件名找到inode号，再通过inode找到散落在磁盘各处的数据块</p>
