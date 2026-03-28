@@ -19,12 +19,12 @@
   <meta name="author" content="roxy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="OS随记额 感觉学的东西还是太乱了 没有体系化 仅用以记录一下自己学习的一些操作系统内容 因为我每次学完就忘了 所以打下来 也许能加深记忆? 仅供参考…              部分由ai生成 部分为自己的理解              进程与线程Unix进程控制接口优雅(Windows😄) fork() -&gt; 创建子进程 复制当前进程，生成一个几乎完全相同的子进程，父进程返回子进程PI">
+    <meta name="description" content="OS随记额 感觉学的东西还是太乱了 没有体系化 仅用以记录一下自己学习的一些操作系统内容 因为我每次学完就忘了 所以打下来 也许能加深记忆? 仅供参考…              部分由ai生成 部分为自己的理解              进程与线程理解程序到底是怎么跑起来的? 为什么多线程会出bug? 为什么浏览器会卡死? Unix进程控制接口优雅(Windows😄) fork() -&gt;">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OS随记">
 <meta property="og:url" content="https://roxy5201314.github.io/2026/03/25/OS%E9%9A%8F%E8%AE%B0/index.html">
 <meta property="og:site_name" content="roxy&#39;s blog">
-<meta property="og:description" content="OS随记额 感觉学的东西还是太乱了 没有体系化 仅用以记录一下自己学习的一些操作系统内容 因为我每次学完就忘了 所以打下来 也许能加深记忆? 仅供参考…              部分由ai生成 部分为自己的理解              进程与线程Unix进程控制接口优雅(Windows😄) fork() -&gt; 创建子进程 复制当前进程，生成一个几乎完全相同的子进程，父进程返回子进程PI">
+<meta property="og:description" content="OS随记额 感觉学的东西还是太乱了 没有体系化 仅用以记录一下自己学习的一些操作系统内容 因为我每次学完就忘了 所以打下来 也许能加深记忆? 仅供参考…              部分由ai生成 部分为自己的理解              进程与线程理解程序到底是怎么跑起来的? 为什么多线程会出bug? 为什么浏览器会卡死? Unix进程控制接口优雅(Windows😄) fork() -&gt;">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://roxy5201314.github.io/images/94.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/93.png">
@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://roxy5201314.github.io/images/97.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/90.png">
 <meta property="article:published_time" content="2026-03-25T10:54:36.000Z">
-<meta property="article:modified_time" content="2026-03-27T05:33:23.371Z">
+<meta property="article:modified_time" content="2026-03-28T08:45:14.145Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="I&#x2F;O">
 <meta property="article:tag" content="内存管理">
@@ -252,7 +252,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          7k 字
+          9.2k 字
         
       </span>
     
@@ -263,7 +263,7 @@
         
         
         
-          59 分钟
+          77 分钟
         
       </span>
     
@@ -317,7 +317,10 @@
             <p>部分由<code>ai</code>生成</p> <p>部分为自己的理解</p> 
           </div>
 
-<h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><h3 id="Unix进程控制接口"><a href="#Unix进程控制接口" class="headerlink" title="Unix进程控制接口"></a>Unix进程控制接口</h3><p>优雅(Windows😄)</p>
+<h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>理解程序到底是怎么跑起来的?</p>
+<p>为什么多线程会出bug?</p>
+<p>为什么浏览器会卡死?</p>
+<h3 id="Unix进程控制接口"><a href="#Unix进程控制接口" class="headerlink" title="Unix进程控制接口"></a>Unix进程控制接口</h3><p>优雅(Windows😄)</p>
 <p><code>fork()</code> -&gt; 创建子进程</p>
 <p>复制当前进程，生成一个几乎完全相同的子进程，父进程返回子进程<code>PID</code>，子进程返回0</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">pid_t</span> pid = fork();<br><span class="hljs-keyword">if</span> (pid == <span class="hljs-number">0</span>) &#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;I am the child\n&quot;</span>);<br>&#125; <span class="hljs-keyword">else</span> &#123;<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;I am the parent, child pid=%d\n&quot;</span>, pid);<br>&#125;<br></code></pre></td></tr></table></figure>
@@ -528,7 +531,12 @@
 <p><code>init</code>会周期性调用<code>wait</code>，因此孤儿进程终止时不会变成僵尸，会被自动回收</p>
 <p>本身没有危害，是正常的设计~</p>
 <p>为什么Docker容器里要用init进程?</p>
-<h2 id="调度与并发"><a href="#调度与并发" class="headerlink" title="调度与并发"></a>调度与并发</h2><h3 id="CPU调度算法"><a href="#CPU调度算法" class="headerlink" title="CPU调度算法"></a>CPU调度算法</h3><p><code>FCFS</code>(先来先服务):简单但长任务饿死短任务</p>
+<h2 id="调度与并发"><a href="#调度与并发" class="headerlink" title="调度与并发"></a>调度与并发</h2><p>并发bug如何<code>调试</code>?</p>
+<p>理解锁，死锁，调度算法</p>
+<p>写出正确的<code>多线程</code>程序</p>
+<p>看懂数据库的<code>事</code>务隔离&#96;</p>
+<p>???</p>
+<h3 id="CPU调度算法"><a href="#CPU调度算法" class="headerlink" title="CPU调度算法"></a>CPU调度算法</h3><p><code>FCFS</code>(先来先服务):简单但长任务饿死短任务</p>
 <p><code>SJF</code>(短作业优先):平均等待时间最短但可能饿死长任务</p>
 <p><code>Round Robin</code>(时间片轮转):最公平，Linux默认</p>
 <p><code>多级反馈队列</code>:新进程进高优先级队列，运行太久降级，兼顾响应速度和吞吐量</p>
@@ -541,7 +549,7 @@
 <p>读到同一个旧值，各自加1后写回，结果只加了1次…</p>
 <p>竞态条件的可怕之处是它大多数时候不出现，偶尔才触发，极难复现</p>
 <p>思考…😟</p>
-<h3 id="互斥锁-Mutex-自旋锁"><a href="#互斥锁-Mutex-自旋锁" class="headerlink" title="互斥锁(Mutex)&#x2F;自旋锁"></a>互斥锁(Mutex)&#x2F;自旋锁</h3><p>保护共享资源的基本同步原语</p>
+<h3 id="互斥锁-Mutex-自旋锁-Spinlock"><a href="#互斥锁-Mutex-自旋锁-Spinlock" class="headerlink" title="互斥锁(Mutex)&#x2F;自旋锁(Spinlock)"></a>互斥锁(Mutex)&#x2F;自旋锁(Spinlock)</h3><p>保护共享资源的基本同步原语</p>
 <p>Mutex:拿不到锁就睡眠，让出CPU，等待唤醒</p>
 <p>自旋锁:拿不到锁就一直循环检查(忙等待)，不让出CPU</p>
 <p>短临界区就用自旋锁(避免睡眠唤醒开销)</p>
@@ -550,19 +558,88 @@
 <p><code>Java synchronized</code>用的是对象内置的Monitor锁?</p>
 <p>为什么持有自旋锁时不能调用可能睡眠的函数?</p>
 <p>数据库的行锁是Mutex?</p>
+<h3 id="读写锁-RWLock"><a href="#读写锁-RWLock" class="headerlink" title="读写锁(RWLock)"></a>读写锁(RWLock)</h3><p>区分读和写，允许多个读者并发，写者独占</p>
+<p>读多写少时可以提升并发度</p>
+<p>但是写者可能被读者饿死(取决于实现)</p>
+<p>且读写锁本身开销略大于互斥锁</p>
+<p>待补充</p>
+<p>乐观锁?</p>
+<p>无锁编程(Lock-Free &#x2F; CAS)</p>
+<p>Compare-And-Swap原子操作?</p>
+<p>ABA问题?</p>
+<p>…</p>
 <h3 id="死锁-Deadlock"><a href="#死锁-Deadlock" class="headerlink" title="死锁(Deadlock)"></a>死锁(Deadlock)</h3><p>多个进程互相等待对方持有的资源，永远无法推进</p>
 <p>死锁成立必须同时满足四个条件:</p>
 <p>1.互斥(资源不能共享)</p>
 <p>2.持有并等待(拿着A等B)</p>
 <p>3.不可抢占(不能强夺资源)</p>
 <p>4.循环等待(A等B，B等A)</p>
-<p>破坏任意一个条件即可预防死锁</p>
+<p>破坏任意一个条件即可预防死锁!</p>
 <p><code>银行家算法</code>可以动态避免死锁</p>
 <p>实际系统多用死锁检测+超时重试…</p>
 <p>数据库死锁排查?</p>
 <p>分布式系统的分布式锁设计?</p>
-<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p><img src="/images/90.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
-<h2 id="文件系统与I-O"><a href="#文件系统与I-O" class="headerlink" title="文件系统与I&#x2F;O"></a>文件系统与I&#x2F;O</h2><h3 id="inode"><a href="#inode" class="headerlink" title="inode"></a>inode</h3><p><code>inode</code>不是<code>文件名</code>，而是文件在磁盘上的<strong>元数据索引节点</strong></p>
+<h3 id="信号量-Semaphore"><a href="#信号量-Semaphore" class="headerlink" title="信号量(Semaphore)"></a>信号量(Semaphore)</h3><p>比Mutex更通用的<code>同步</code>机制，可控制资源数量</p>
+<p><strong>信号量</strong>是一个整数值，加上两个<code>原子操作</code>:P(wait)和V(signal)</p>
+<p>它的值代表可用的资源数量</p>
+<p>P操作:尝试获取一个资源(wait)</p>
+<p>逻辑:</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs text">如果信号量值 &gt; 0:<br>    值减1，继续执行<br>否则:<br>    阻塞当前线程/进程<br></code></pre></td></tr></table></figure>
+
+<p>V操作:释放一个资源(signal)</p>
+<p>逻辑:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs test">值加1<br>如果有其它线程/进程在等待这个信号量，唤醒其中一个<br></code></pre></td></tr></table></figure>
+
+<p>这两个操作是<strong>原子</strong>的，不会被中断，保证了<code>并发</code>正确性</p>
+<p>易知，二元信号量其实就等价于<code>Mutex</code></p>
+<p>当信号量的初始值设为N(N &gt; 1)时，它表示有N个相同的资源可以同时使用，这就是<strong>计数信号量</strong></p>
+<p>而计数信号量可以允许<code>N</code>个并发访问(如连接池最多10个连接)</p>
+<p>P操作:申请一个资源，只要信号量值 &gt; 0，就减1并继续，当值减到 0 时，再来的线程就会阻塞，直到有人释放资源</p>
+<p>V操作:释放一个资源，值加1，如果之前有线程在等待，就唤醒一个</p>
+<p>经典问题:生产者-消费者，读者-写者，哲学家就餐???</p>
+<p>现实:</p>
+<p>数据库连接池的实现原理?</p>
+<p>限流算法(令牌桶)的信号量变体?</p>
+<h3 id="条件变量-Condition-Variable"><a href="#条件变量-Condition-Variable" class="headerlink" title="条件变量(Condition Variable)"></a>条件变量(Condition Variable)</h3><p>让线程等待某个条件成立的<code>同步</code>机制</p>
+<p>配合Mutex使用</p>
+<p>wait():原子地释放锁并睡眠</p>
+<p>signal()&#x2F;broadcast():唤醒等待的线程</p>
+<p>正确使用必须在while循环里检查条件(防止虚假唤醒)</p>
+<p>示例:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;pthread.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><br><span class="hljs-type">int</span> buffer = <span class="hljs-number">0</span>;          <span class="hljs-comment">// 共享缓冲区</span><br><span class="hljs-type">pthread_mutex_t</span> mutex = PTHREAD_MUTEX_INITIALIZER;<br><span class="hljs-type">pthread_cond_t</span> cond = PTHREAD_COND_INITIALIZER;<br><br><span class="hljs-type">void</span> *<span class="hljs-title function_">producer</span><span class="hljs-params">(<span class="hljs-type">void</span> *arg)</span> &#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++) &#123;<br>        pthread_mutex_lock(&amp;mutex);<br>        buffer = i;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Produced: %d\n&quot;</span>, i);<br>        pthread_cond_signal(&amp;cond);   <span class="hljs-comment">// 唤醒消费者</span><br>        pthread_mutex_unlock(&amp;mutex);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;<br>&#125;<br><br><span class="hljs-type">void</span> *<span class="hljs-title function_">consumer</span><span class="hljs-params">(<span class="hljs-type">void</span> *arg)</span> &#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++) &#123;<br>        pthread_mutex_lock(&amp;mutex);<br>        <span class="hljs-keyword">while</span> (buffer == <span class="hljs-number">-1</span>) &#123;        <span class="hljs-comment">// 假设 -1 表示无数据</span><br>            pthread_cond_wait(&amp;cond, &amp;mutex);<br>        &#125;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Consumed: %d\n&quot;</span>, buffer);<br>        buffer = <span class="hljs-number">-1</span>;<br>        pthread_mutex_unlock(&amp;mutex);<br>    &#125;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>Java的wait()&#x2F;notify()，Python的threading.Condition都是这个机制😁</p>
+<p>待补充</p>
+<p>如何实现线程安全的队列?</p>
+<p>理解<code>Java BlockingQueue</code>的底层原理…</p>
+<h2 id="内存管理"><a href="#内存管理" class="headerlink" title="内存管理"></a>内存管理</h2><p>为什么程序会崩溃?</p>
+<p>为什么会有<code>内存泄漏</code>?</p>
+<p>为什么虚拟内存能让程序以为自己有无限内存?</p>
+<p>C&#x2F;C++&#x2F;Rust深入理解…</p>
+<h3 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h3><p>在没有虚拟内存的早期系统中</p>
+<p>程序直接操作物理内存地址(实模式)</p>
+<p>显然，这样会带来严重问题</p>
+<p>比如:</p>
+<p>地址冲突:多个程序同时运行必须被分配到互不重叠的物理内存区域，程序员或系统需要静态划分</p>
+<p>碎片与扩展难:程序需要连续物理内存，当内存不足时难以动态增长</p>
+<p><code>安全性</code>差:任何程序都能访问任意物理地址，容易相互破坏!</p>
+<p>因此引入了<strong>虚拟地址空间</strong></p>
+<p>虚拟地址空间通过<code>地址翻译</code>机制，为每个进程提供独立的，从0开始的地址空间</p>
+<p>进程使用的地址称为<code>虚拟地址</code>(VA)，CPU在访问内存时，由硬件(<code>MMU</code>)配合操作系统将虚拟地址转换为实际的<code>物理地址</code>(PA)</p>
+<p>这样</p>
+<p>每个进程都认为自己独占了整个内存，且地址空间从0开始，连续，规整</p>
+<p>这种抽象是内存管理的基础，让进程隔离，简化编译，灵活使用物理内存成为可能!</p>
+<p>典型64位进程地址空间:</p>
+<p><img src="/images/90.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>两个进程的地址<code>0x400000</code>指向的物理地址完全不同!</p>
+<p>这是进程隔离的基础，一个进程崩溃不会影响其它进程!</p>
+<p>为什么C数组越界不一定立刻崩溃?</p>
+<p>理解Segfault(段错误)是什么!</p>
+<h2 id="文件系统与I-O"><a href="#文件系统与I-O" class="headerlink" title="文件系统与I&#x2F;O"></a>文件系统与I&#x2F;O</h2><p>文件系统是<code>程序</code>和<code>磁盘</code>之间的翻译层</p>
+<p>如何写出高性能的I&#x2F;O代码?</p>
+<p>数据库为什么比文件快?</p>
+<p>Docker镜像是怎么工作的?</p>
+<h3 id="inode"><a href="#inode" class="headerlink" title="inode"></a>inode</h3><p><code>inode</code>不是<code>文件名</code>，而是文件在磁盘上的<strong>元数据索引节点</strong></p>
 <p>文件名和<code>inode</code>是一一对应的关系(硬链接除外😠)</p>
 <p>操作系统通过文件名找到inode号，再通过inode找到散落在磁盘各处的数据块</p>
 <h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h3><h4 id="硬链接"><a href="#硬链接" class="headerlink" title="硬链接"></a>硬链接</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">ln</span> 源文件 硬链接名    <span class="hljs-comment"># 创建硬链接</span><br></code></pre></td></tr></table></figure>
@@ -592,8 +669,8 @@
 <p><strong>同步</strong>:你自己盯着数据从内核拷贝到你的程序里</p>
 <p><strong>异步</strong>:你告诉系统数据好了直接放我门口，放完了叫我，中间完全不用管!</p>
 <p><strong>性能</strong>的关键:</p>
-<p>IO的<code>瓶颈</code>通常在于等待(磁盘寻道或网络延迟)和拷贝(数据在用户空间和内核空间之间来回复制)</p>
-<p>高性能系统设计(如<code>epoll</code>，零拷贝)都是为了减少这两者的开销…</p>
+<p>IO的<code>瓶颈</code>通常在于<code>等待</code>(<code>磁盘寻道</code>或<code>网络延迟</code>)和<code>拷贝</code>(数据在用户空间和内核空间之间来回复制)</p>
+<p>高性能系统设计(如<code>epoll</code>，<code>零拷贝</code>)都是为了减少这两者的开销…</p>
 <p>待补充…</p>
 
                 
@@ -671,7 +748,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2026年3月27日</div>
+          <div>2026年3月28日</div>
         </div>
       
       
