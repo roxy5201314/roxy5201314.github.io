@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://roxy5201314.github.io/images/90.png">
 <meta property="article:published_time" content="2026-02-11T09:45:05.000Z">
-<meta property="article:modified_time" content="2026-03-24T03:36:02.281Z">
+<meta property="article:modified_time" content="2026-03-30T15:36:15.970Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="heap">
 <meta property="article:tag" content="堆">
@@ -347,6 +347,7 @@
 <p>ps:理解unlink操作</p>
 <h2 id="malloc-state"><a href="#malloc-state" class="headerlink" title="malloc_state"></a>malloc_state</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">malloc_state</span></span><br><span class="hljs-class">&#123;</span><br>  <span class="hljs-comment">/* Serialize access.  */</span><br>  __libc_lock_define (, mutex);<br>  <span class="hljs-comment">/* Flags (formerly in max_fast).  */</span><br>  <span class="hljs-type">int</span> flags;<br>  <span class="hljs-comment">/* Set if the fastbin chunks contain recently inserted free blocks.  */</span><br>  <span class="hljs-comment">/* Note this is a bool but not all targets support atomics on booleans.  */</span><br>  <span class="hljs-type">int</span> have_fastchunks;<br>  <span class="hljs-comment">/* Fastbins */</span><br>  mfastbinptr fastbinsY[NFASTBINS];<br>  <span class="hljs-comment">/* Base of the topmost chunk -- not otherwise kept in a bin */</span><br>  mchunkptr top;<br>  <span class="hljs-comment">/* The remainder from the most recent split of a small request */</span><br>  mchunkptr last_remainder;<br>  <span class="hljs-comment">/* Normal bins packed as described above */</span><br>  mchunkptr bins[NBINS * <span class="hljs-number">2</span> - <span class="hljs-number">2</span>];<br>  <span class="hljs-comment">/* Bitmap of bins */</span><br>  <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> binmap[BINMAPSIZE];<br>  <span class="hljs-comment">/* Linked list */</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">malloc_state</span> *<span class="hljs-title">next</span>;</span><br>  <span class="hljs-comment">/* Linked list for free arenas.  Access to this field is serialized</span><br><span class="hljs-comment">     by free_list_lock in arena.c.  */</span><br>  <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">malloc_state</span> *<span class="hljs-title">next_free</span>;</span><br>  <span class="hljs-comment">/* Number of threads attached to this arena.  0 if the arena is on</span><br><span class="hljs-comment">     the free list.  Access to this field is serialized by</span><br><span class="hljs-comment">     free_list_lock in arena.c.  */</span><br>  INTERNAL_SIZE_T attached_threads;<br>  <span class="hljs-comment">/* Memory allocated from the system in this arena.  */</span><br>  INTERNAL_SIZE_T system_mem;<br>  INTERNAL_SIZE_T max_system_mem;<br>&#125;;<br></code></pre></td></tr></table></figure>
 
+<p>重要</p>
 <h2 id="bins"><a href="#bins" class="headerlink" title="bins"></a>bins</h2><p>当我们使用free后</p>
 <p>chunk闲置</p>
 <p>ptmalloc会根据size的不同大小将之存放到不同的<code>bins</code>中进行统一的调度，而不会马上返还给系统</p>
@@ -364,6 +365,7 @@
 <p><code>unsorted bin</code>是<code>glibc</code>堆管理中的一个临时缓存双向链表，所有新释放(or合并后)的 chunk 都会先进入其中而不立即按大小分类</p>
 <p>在后续 malloc 时会优先遍历该链表，若命中则直接分配，否则再将其重新分配到对应的<code>small/large bin</code>，从而减少分箱开销并提升局部性与性能~</p>
 <p>存在<code>unsorted bin attack</code></p>
+<p>待补充…</p>
 <h2 id="small-bin"><a href="#small-bin" class="headerlink" title="small bin"></a>small bin</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> NSMALLBINS         64</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> SMALLBIN_WIDTH    MALLOC_ALIGNMENT</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> SMALLBIN_CORRECTION (MALLOC_ALIGNMENT &gt; 2 * SIZE_SZ)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MIN_LARGE_SIZE    ((NSMALLBINS - SMALLBIN_CORRECTION) * SMALLBIN_WIDTH)</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> in_smallbin_range(sz)  \</span><br><span class="hljs-meta">  ((unsigned long) (sz) &lt; (unsigned long) MIN_LARGE_SIZE)</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> smallbin_index(sz) \</span><br><span class="hljs-meta">  ((SMALLBIN_WIDTH == 16 ? (((unsigned) (sz)) &gt;&gt; 4) : (((unsigned) (sz)) &gt;&gt; 3))\</span><br><span class="hljs-meta">   + SMALLBIN_CORRECTION)</span><br></code></pre></td></tr></table></figure>
 
 <p>我暂时还没接触到😂</p>
@@ -459,6 +461,7 @@
 <p>这之后可谓是堆利用的至暗时刻</p>
 <p>然而这并不能阻止hacker们的热情</p>
 <p>针对<code>IO_FILE</code>结构体的<code>FSOP</code>攻击应运而生…</p>
+<p>待补充…</p>
 
                 
               </div>
@@ -525,7 +528,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2026年3月24日</div>
+          <div>2026年3月30日</div>
         </div>
       
       
