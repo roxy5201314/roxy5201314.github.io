@@ -19,12 +19,12 @@
   <meta name="author" content="roxy">
   <meta name="keywords" content="">
   
-    <meta name="description" content="OS随记额 感觉学的东西还是太乱了 没有体系化 仅用以记录一下自己学习的一些操作系统内容 因为我每次学完就忘了 所以打下来 也许能加深记忆? 仅供参考…              部分由ai生成 部分为自己的理解              进程与线程理解程序到底是怎么跑起来的? 为什么多线程会出bug? 为什么浏览器会卡死? Unix进程控制接口优雅(Windows😄) fork() -&gt;">
+    <meta name="description" content="OS随记额 感觉学的东西还是太乱了 没有体系化 仅用以记录一下自己学习的一些操作系统内容 因为我每次学完就忘了 所以打下来 也许能加深记忆? 同时 输出倒逼输入 不错 仅供参考…              部分由ai生成 部分为自己的理解 其实ai用来教学 还是很不错的嘛              开始吧 进程与线程你知道程序到底是怎么跑起来的吗? 为什么多线程会出bug? 为什么浏览器有时候会卡">
 <meta property="og:type" content="article">
 <meta property="og:title" content="OS随记">
 <meta property="og:url" content="https://roxy5201314.github.io/2026/03/25/OS%E9%9A%8F%E8%AE%B0/index.html">
 <meta property="og:site_name" content="roxy&#39;s blog">
-<meta property="og:description" content="OS随记额 感觉学的东西还是太乱了 没有体系化 仅用以记录一下自己学习的一些操作系统内容 因为我每次学完就忘了 所以打下来 也许能加深记忆? 仅供参考…              部分由ai生成 部分为自己的理解              进程与线程理解程序到底是怎么跑起来的? 为什么多线程会出bug? 为什么浏览器会卡死? Unix进程控制接口优雅(Windows😄) fork() -&gt;">
+<meta property="og:description" content="OS随记额 感觉学的东西还是太乱了 没有体系化 仅用以记录一下自己学习的一些操作系统内容 因为我每次学完就忘了 所以打下来 也许能加深记忆? 同时 输出倒逼输入 不错 仅供参考…              部分由ai生成 部分为自己的理解 其实ai用来教学 还是很不错的嘛              开始吧 进程与线程你知道程序到底是怎么跑起来的吗? 为什么多线程会出bug? 为什么浏览器有时候会卡">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://roxy5201314.github.io/images/94.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/93.png">
@@ -36,8 +36,9 @@
 <meta property="og:image" content="https://roxy5201314.github.io/images/96.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/97.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/90.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/5.jpg">
 <meta property="article:published_time" content="2026-03-25T10:54:36.000Z">
-<meta property="article:modified_time" content="2026-03-29T08:46:25.510Z">
+<meta property="article:modified_time" content="2026-03-30T13:49:08.315Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="I&#x2F;O">
 <meta property="article:tag" content="内存管理">
@@ -252,7 +253,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          9.2k 字
+          15k 字
         
       </span>
     
@@ -263,7 +264,7 @@
         
         
         
-          77 分钟
+          126 分钟
         
       </span>
     
@@ -312,14 +313,18 @@
 <p>因为我每次学完就忘了</p>
 <p>所以打下来</p>
 <p>也许能加深记忆?</p>
+<p>同时</p>
+<p>输出倒逼输入</p>
+<p>不错</p>
 <p>仅供参考…</p>
 <div class="note note-danger">
-            <p>部分由<code>ai</code>生成</p> <p>部分为自己的理解</p> 
+            <p>部分由<code>ai</code>生成</p> <p>部分为自己的理解</p> <p>其实ai用来教学</p> <p>还是很不错的嘛</p> 
           </div>
 
-<h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>理解程序到底是怎么跑起来的?</p>
+<p>开始吧</p>
+<h2 id="进程与线程"><a href="#进程与线程" class="headerlink" title="进程与线程"></a>进程与线程</h2><p>你知道程序到底是怎么跑起来的吗?</p>
 <p>为什么多线程会出bug?</p>
-<p>为什么浏览器会卡死?</p>
+<p>为什么浏览器有时候会卡死?</p>
 <h3 id="Unix进程控制接口"><a href="#Unix进程控制接口" class="headerlink" title="Unix进程控制接口"></a>Unix进程控制接口</h3><p>优雅(Windows😄)</p>
 <p><code>fork()</code> -&gt; 创建子进程</p>
 <p>复制当前进程，生成一个几乎完全相同的子进程，父进程返回子进程<code>PID</code>，子进程返回0</p>
@@ -532,9 +537,9 @@
 <p>本身没有危害，是正常的设计~</p>
 <p>为什么Docker容器里要用init进程?</p>
 <h2 id="调度与并发"><a href="#调度与并发" class="headerlink" title="调度与并发"></a>调度与并发</h2><p>并发bug如何<code>调试</code>?</p>
-<p>理解锁，死锁，调度算法</p>
-<p>写出正确的<code>多线程</code>程序</p>
-<p>看懂<code>数据库</code>的<code>事务隔离</code></p>
+<p>如何理解锁，死锁，调度算法?</p>
+<p>怎么写出正确的<code>多线程</code>程序?</p>
+<p><code>数据库</code>的<code>事务隔离</code>是什么?</p>
 <p>???</p>
 <h3 id="CPU调度算法"><a href="#CPU调度算法" class="headerlink" title="CPU调度算法"></a>CPU调度算法</h3><p><code>FCFS</code>(先来先服务):简单但长任务饿死短任务</p>
 <p><code>SJF</code>(短作业优先):平均等待时间最短但可能饿死长任务</p>
@@ -616,6 +621,7 @@
 <p>为什么会有<code>内存泄漏</code>?</p>
 <p>为什么虚拟内存能让程序以为自己有无限内存?</p>
 <p>C&#x2F;C++&#x2F;Rust深入理解…</p>
+<p>pwn梦开始的地方…</p>
 <h3 id="虚拟地址空间"><a href="#虚拟地址空间" class="headerlink" title="虚拟地址空间"></a>虚拟地址空间</h3><p>在没有虚拟内存的早期系统中</p>
 <p>程序直接操作物理内存地址(实模式)</p>
 <p>显然，这样会带来严重问题</p>
@@ -635,13 +641,157 @@
 <p>这是进程隔离的基础，一个进程崩溃不会影响其它进程!</p>
 <p>为什么C数组越界不一定立刻崩溃?</p>
 <p>理解Segfault(段错误)是什么!</p>
+<h3 id="分页-Paging-页表"><a href="#分页-Paging-页表" class="headerlink" title="分页(Paging)&amp;页表"></a>分页(Paging)&amp;页表</h3><p>把虚拟地址空间和物理内存都切成固定大小的页(通常<code>4KB</code>)</p>
+<p><strong>页表</strong>记录虚拟页到物理页帧的映射</p>
+<p>CPU访问内存时，<code>MMU</code>自动查页表完成地址翻译</p>
+<p><code>多级页表</code>(x86-64用4级)节省页表内存(理解)</p>
+<p>将页表本身的存储也分页，并按照虚拟地址的使用情况，在缺页时动态分配所需的页表页</p>
+<p>未使用的虚拟地址范围不会产生任何页表内存开销</p>
+<p>待补充…</p>
+<p><strong>TLB</strong>(<code>快表</code>)是页表的硬件<code>缓存</code></p>
+<p>命中率99%+</p>
+<p>miss了才查内存页表!</p>
+<p><code>mmap()</code>的工作原理?</p>
+<p>待补充</p>
+<p>为什么进程切换慢(要刷新TLB!)</p>
+<p><code>huge page</code>为何能提升性能?</p>
+<h3 id="缺页异常-Page-Fault"><a href="#缺页异常-Page-Fault" class="headerlink" title="缺页异常(Page Fault)"></a>缺页异常(Page Fault)</h3><p>访问一个虚拟地址，但其对应的物理页不在内存中</p>
+<p>三种情况:</p>
+<p>1.页在磁盘(swap)，从磁盘换入</p>
+<p>物理内存不足时，内核会把一些不常用的页面换出到磁盘的<code>swap</code>分区(或<code>swap</code>文件)</p>
+<p>当进程再次访问这些被换出的页面时，页面内容不在物理内存中，<code>PTE</code>被标记为不存在，但<code>PTE</code>中会保存一个<code>swap</code>偏移量，指示该页在磁盘上的位置</p>
+<p>关键:这一步会产生磁盘<code>I/O</code>，所以性能开销较大</p>
+<p>2.合法的新访问(懒分配)，分配新物理页</p>
+<p>进程通过<code>malloc()</code>或<code>mmap(MAP_ANONYMOUS)</code>申请了内存</p>
+<p>但内核只是在虚拟地址空间里记录了<code>VMA</code>(表示这块地址将来可用)，并没有立即分配物理页，也没有建立页表映射</p>
+<p>这是典型的<code>惰性分配</code>(lazy allocation)优化</p>
+<p>避免为可能永远不用的内存提前分配物理资源</p>
+<p>这解释了为什么<code>malloc</code>大块内存后不立即消耗物理内存，只有真正写入时才分配</p>
+<p>而对于文件映射(<code>mmap</code>文件)，缺页时才会从文件的页缓存中读取相应页面</p>
+<p>流程:</p>
+<p>进程首次访问该虚拟地址(如<code>*p = 1</code>)</p>
+<p>缺页异常发生，因为<code>PTE</code>是空的(不存在)</p>
+<p>内核检查该地址是否落在进程的某个<code>VMA</code>范围内，且访问权限(读&#x2F;写)合法</p>
+<p>如果不合法转为情况3(非法访问!)</p>
+<p>如果合法</p>
+<p>那么，内核分配一个物理页帧，通常初始化为全零(对于匿名内存)</p>
+<p>更新页表，建立虚拟地址到物理页帧的映射，设置访问权限</p>
+<p>最后，进程恢复执行，完成内存访问!</p>
+<p>智慧!</p>
+<p>3.真正的非法访问，触发<code>SIGSEGV</code>(what the hell!)</p>
+<p>进程访问了一个根本没有对应的<code>VMA</code>的地址(例如空指针解引用，数组越界到未映射区域)</p>
+<p>或者虽然地址在<code>VMA</code>内但访问权限不匹配(比如尝试写入只读的代码段)</p>
+<p>内核向进程发送<code>SIGSEGV</code>信号(Segmentation Fault!)</p>
+<p>core dumped!</p>
+<h3 id="写时复制技术-Copy-on-Write，CoW"><a href="#写时复制技术-Copy-on-Write，CoW" class="headerlink" title="写时复制技术(Copy-on-Write，CoW)"></a>写时复制技术(Copy-on-Write，CoW)</h3><p><code>CoW</code>是一种优化技术，用于延迟复制物理内存，直到真正需要修改时</p>
+<p>它依赖缺页异常来捕获<code>首次写入</code></p>
+<p>实例:</p>
+<p><code>fork()</code>为什么快?</p>
+<p>当父进程调用<code>fork()</code>创建子进程时，传统做法是复制整个父进程的地址空间</p>
+<p>但这样效率极低，而且大部分内存可能根本不会被写入!</p>
+<p>因此Linux采用CoW机制</p>
+<p>具体步骤如下:</p>
+<p>1.共享物理页:<code>fork()</code>后，父子进程的页表都指向相同的物理页帧</p>
+<p>但这些页表项被标记为<strong>只读</strong>(即使原来父进程是可写的)</p>
+<p>2.读操作:如果父子进程都只是读取数据，不会发生任何复制，效率极高!</p>
+<p>3.写操作:当其中一个进程(例如子进程)尝试写入某个共享页时:</p>
+<ul>
+<li><p><code>CPU</code>触发缺页异常(因为页表项是只读的，而写操作需要写权限)</p>
+</li>
+<li><p>内核检查异常地址:发现这是<code>CoW</code>页面(通过<code>PTE</code>中的特殊标志或<code>VMA</code>标志)</p>
+</li>
+<li><p>内核复制该物理页到一个新的物理页帧</p>
+</li>
+<li><p>更新触发写入的进程的页表，将新页帧映射到该虚拟地址，并标记为可写</p>
+</li>
+<li><p>另一个进程的页表仍然指向原物理页(仍是<strong>只读</strong>)</p>
+</li>
+<li><p>异常返回后，重新执行写入指令，此时写入的便是新复制的页面!</p>
+</li>
+</ul>
+<p>此后，父子进程各自拥有独立的物理页，修改互不影响!</p>
+<p>极大节省了<code>内存</code>和<code>时间</code>…</p>
+<p>Docker的overlay文件系统?</p>
+<p>Redis fork子进程做<code>RDB</code>快照时的内存消耗?</p>
+<p>待补充…</p>
+<h3 id="栈vs堆"><a href="#栈vs堆" class="headerlink" title="栈vs堆"></a>栈vs堆</h3><p>两种内存分配区域，管理方式完全不同!</p>
+<p><strong>栈</strong>:自动管理，函数返回时自动释放，分配极快(只移动<code>栈指针</code>)，大小有限(默认<code>8MB</code>)</p>
+<p><strong>堆</strong>:手动(C&#x2F;C++)或<code>GC</code>管理，大小几乎无限，分配慢(要找合适的空闲块)</p>
+<p>栈溢出(StackOverflow)!</p>
+<p>C&#x2F;C++堆<strong>内存泄漏</strong></p>
+<p>C里<code>malloc/free</code>管理堆</p>
+<p><code>Java/Python</code>的<strong>对象</strong>都在堆上</p>
+<p><code>Rust</code>的所有权系统本质上就是让编译器自动管理堆~</p>
+<p>待补充…</p>
+<h3 id="内存分配器-malloc原理"><a href="#内存分配器-malloc原理" class="headerlink" title="内存分配器(malloc原理)"></a>内存分配器(malloc原理)</h3><p>malloc如何在堆上找到合适的空闲内存块?</p>
+<p>空闲链表:维护一个空闲块链表</p>
+<p><code>first-fit/best-fit</code>策略找合适大小…</p>
+<p>glibc的<code>ptmalloc</code>😁</p>
+<p><code>slab</code>分配器(Linux内核):预先分配固定大小的对象池，避免碎片</p>
+<p>在Linux内核中，内存分配的需求与用户空间截然不同</p>
+<p>内核需要频繁地创建和销毁大量固定大小的数据结构(如<code>task_struct</code>，<code>inode</code>，<code>dentry</code>等)</p>
+<p>如果直接使用通用的<code>伙伴系统</code>(<code>buddy system</code>)以<strong>页</strong>(通常<code>4KB</code>)为单位分配，会造成两个严重问题:</p>
+<ul>
+<li><p><strong>内部碎片</strong>:一个几十字节的结构体占用一个完整的页框，浪费大量内存</p>
+</li>
+<li><p><strong>外部碎片</strong>:频繁分配和释放不同大小的页框会导致页级别碎片，难以分配<strong>连续</strong>的大页</p>
+</li>
+</ul>
+<p>为了解决这些问题，Linux内核引入了<code>slab</code>分配器</p>
+<p>其核心思想是:预先分配一组固定大小的对象池，将对象缓存起来，按需分配和回收，避免直接与伙伴系统交互，从而消除碎片，提高性能</p>
+<p>待补充…</p>
+<p><code>tcmalloc</code>(Google)和<code>jemalloc</code>(Firefox&#x2F;Redis)高性能分配器，用<strong>线程本地缓存</strong>减少<strong>锁</strong>竞争</p>
+<p><code>Redis</code>为什么换用<code>jemalloc</code>而不是系统<code>malloc</code>?</p>
+<p>内存碎片问题?</p>
+<p>to be continued…</p>
+<h3 id="垃圾回收-GC，Garbage-Collection-算法"><a href="#垃圾回收-GC，Garbage-Collection-算法" class="headerlink" title="垃圾回收(GC，Garbage Collection)算法"></a>垃圾回收(GC，Garbage Collection)算法</h3><p>自动回收不再使用内存的机制</p>
+<p><code>引用计数</code>:Python用，无法处理<code>循环引用</code></p>
+<p><strong>标记-清除</strong>:从根节点遍历，未标记的就是垃圾</p>
+<p>能正确处理循环引用</p>
+<p>但是需要暂停程序(<strong>Stop-the-world</strong>，<code>STW</code>)才能准确标记</p>
+<p>且清除后会产生内存碎片，后续分配大对象可能失败</p>
+<div class="note note-danger">
+            <p><code>Stop-the-world</code>是<code>GC</code>的大问题，Java曾经因此引发生产事故😭</p> 
+          </div>
+
+<p><strong>分代回收</strong>:<code>新生代</code>(大多数对象很快死亡)用复制算法，<code>老年代</code>则用<code>标记-整理</code></p>
+<p>JVM的G1&#x2F;ZGC，Go的三色标记都是这些思想的组合</p>
+<p><strong>三色标记</strong>(<code>Tri-color Marking</code>)</p>
+<p>三色标记是一种并发标记算法，可以在程序运行时(不暂停)进行大部分标记工作</p>
+<p>将对象分为三种颜色:</p>
+<p>白色:未访问过的对象(可能是垃圾)</p>
+<p>灰色:已访问但其引用的对象尚未全部检查</p>
+<p>黑色:已访问且其所有引用都已检查</p>
+<p>标记过程:从根开始，将对象标记为灰色，然后逐步处理灰色对象，将其引用的白色对象变为灰色，自身变为黑色，最后白色对象就是垃圾!</p>
+<p><img src="/images/5.jpg" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>Python内存泄漏排查?</p>
+<p>Java GC调优?</p>
+<p>Go GC pause过长的原因?</p>
+<p>待补充…</p>
 <h2 id="文件系统与I-O"><a href="#文件系统与I-O" class="headerlink" title="文件系统与I&#x2F;O"></a>文件系统与I&#x2F;O</h2><p>文件系统是<code>程序</code>和<code>磁盘</code>之间的翻译层</p>
 <p>如何写出高性能的I&#x2F;O代码?</p>
 <p>数据库为什么比文件快?</p>
 <p>Docker镜像是怎么工作的?</p>
-<h3 id="inode"><a href="#inode" class="headerlink" title="inode"></a>inode</h3><p><code>inode</code>不是<code>文件名</code>，而是文件在磁盘上的<strong>元数据索引节点</strong></p>
+<p>???</p>
+<h3 id="inode-文件描述符"><a href="#inode-文件描述符" class="headerlink" title="inode&amp;文件描述符"></a>inode&amp;文件描述符</h3><p><strong>inode</strong>是文件的元数据，<strong>文件描述符</strong>是进程访问文件的句柄</p>
+<p>inode存储文件大小，权限，时间戳，数据块位置等等，就是不存文件名(文件名存在目录里)</p>
+<p>文件描述符(<code>fd</code>)是个整数，指向内核的文件表项，再指向inode</p>
+<ul>
+<li><p>0 &#x3D; stdin</p>
+</li>
+<li><p>1 &#x3D; stdout</p>
+</li>
+<li><p>2 &#x3D; stderr</p>
+</li>
+</ul>
+<p>使用<code>lsof</code>命令可以列出所有进程打开的fd</p>
+<p>fd泄漏(没关闭)会耗尽系统资源</p>
+<p><code>inode</code>不是<code>文件名</code>，而是文件在磁盘上的<strong>元数据索引节点</strong></p>
 <p>文件名和<code>inode</code>是一一对应的关系(硬链接除外😠)</p>
 <p>操作系统通过文件名找到inode号，再通过inode找到散落在磁盘各处的数据块</p>
+<p><code>ls -i</code>看inode号</p>
+<p>硬链接和软链接的区别?</p>
+<p><code>ulimit -n</code>设置最大fd数量</p>
 <h3 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h3><h4 id="硬链接"><a href="#硬链接" class="headerlink" title="硬链接"></a>硬链接</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">ln</span> 源文件 硬链接名    <span class="hljs-comment"># 创建硬链接</span><br></code></pre></td></tr></table></figure>
 
 <p>硬链接的本质是多个文件名指向同一个inode</p>
@@ -663,15 +813,149 @@
 <p>从CPU的视角来看，IO很慢😭</p>
 <p>于是为了效率，操作系统引入了分层机制:</p>
 <p><code>阻塞</code>与<code>非阻塞</code>:</p>
-<p><strong>阻塞</strong>:你发出读文件指令后，什么也不干，眼巴巴等着数据从磁盘加载到内存😅</p>
-<p><strong>非阻塞</strong>:你发出指令后，先去做别的事，过一会再来问数据好了没</p>
+<p><strong>阻塞</strong>:进程调用<code>read()</code>从文件描述符读取数据</p>
+<p>如果内核缓冲区中还没有数据(例如网络数据尚未到达)，则系统调用阻塞，进程进入睡眠状态</p>
+<p>直到数据准备就绪，内核将数据从内核缓冲区拷贝到用户缓冲区，<code>read()</code>返回，进程继续执行</p>
+<p>一个线程只能处理一个<code>fd</code>，当有大量连接时，要么需要多线程(每个线程一个连接)，要么线程被阻塞浪费<code>CPU</code>资源😅</p>
+<p><strong>非阻塞</strong>:设置文件描述符为<code>O_NONBLOCK</code>标志</p>
+<p>调用<code>read()</code>时，如果内核缓冲区没有数据，系统调用立即返回，并设置错误码为<code>EAGAIN</code>或<code>EWOULDBLOCK</code></p>
+<p>进程需要循环(轮询)不断调用<code>read()</code>直到数据准备好</p>
+<p>线程不会被阻塞，可以不断检查多个<code>fd</code>，但轮询会占用大量<code>CPU</code></p>
+<p>因此单独使用<code>非阻塞I/O</code>并不高效，很少直接使用😅</p>
 <p><code>同步</code>与<code>异步</code>:</p>
-<p><strong>同步</strong>:你自己盯着数据从内核拷贝到你的程序里</p>
-<p><strong>异步</strong>:你告诉系统数据好了直接放我门口，放完了叫我，中间完全不用管!</p>
+<p><strong>同步</strong>:进程在数据拷贝时被阻塞(阻塞，非阻塞，多路复用都属于<code>同步I/O</code>)</p>
+<p><strong>异步</strong>:进程在发起操作后即可做其它事，拷贝过程由内核完成</p>
 <p><strong>性能</strong>的关键:</p>
 <p>IO的<code>瓶颈</code>通常在于<code>等待</code>(<code>磁盘寻道</code>或<code>网络延迟</code>)和<code>拷贝</code>(数据在用户空间和内核空间之间来回复制)</p>
-<p>高性能系统设计(如<code>epoll</code>，<code>零拷贝</code>)都是为了减少这两者的开销…</p>
+<p>高性能系统设计(如<code>epoll</code>，<code>零拷贝</code>)都是为了减少这两者的开销~</p>
 <p>待补充…</p>
+<p><code>I/O多路复用</code>(select -&gt; poll -&gt; epoll):一个线程同时监控多个文件描述符，当其中任何一个有<code>I/O</code>事件(可读，可写等)时，内核通知应用程序去处理</p>
+<p>select:最古老，监控<code>fd</code>数量有限(通常<code>1024</code>)，每次需要遍历全部<code>fd</code>，效率随<code>fd</code>数量增加线性下降</p>
+<p>poll:与<code>select</code>类似，但使用链表管理<code>fd</code>，无最大数量限制，但仍需遍历</p>
+<p><strong>epoll</strong>(<code>Linux</code>特有):基于事件驱动，只返回有事件发生的<code>fd</code>，无需遍历全部，效率与活跃连接数相关</p>
+<p>支持边缘触发(ET)和水平触发(LT)</p>
+<p>???</p>
+<p>Nginx&#x2F;Redis单线程处理万级并发的核心</p>
+<p>Node.js的事件循环本质便是I&#x2F;O多路复用</p>
+<p>???</p>
+<p><code>异步I/O</code>(<code>aio</code>&#x2F;<strong>io_uring</strong>):应用程序发起<code>I/O</code>操作后立即返回，不等待数据</p>
+<p>当内核完成数据拷贝(从内核到用户空间)后，通过信号，回调函数或<code>io_uring</code>的完成队列通知应用程序</p>
+<p>传统异步I&#x2F;O:AIO</p>
+<p>略</p>
+<p>现代异步I&#x2F;O:<strong>io_uring</strong>(Linux5.1+)</p>
+<p>待补充…</p>
+<h3 id="缓冲区I-O-vs-直接I-O"><a href="#缓冲区I-O-vs-直接I-O" class="headerlink" title="缓冲区I&#x2F;O vs 直接I&#x2F;O"></a>缓冲区I&#x2F;O vs 直接I&#x2F;O</h3><p>读写磁盘是否经过操作系统的<strong>页缓存</strong></p>
+<p>缓冲I&#x2F;O(默认):读写都经过内核页缓存(page cache)，读命中缓存直接返回，写先写缓存再异步刷盘</p>
+<p>读操作:进程发起<code>read()</code>，内核首先在页缓存(page cache)中查找，如果数据已在缓存中，直接返回，否则，从磁盘读取到页缓存，再复制到用户空间</p>
+<p>写操作:进程发起<code>write()</code>，内核将数据写入页缓存，立即返回(认为已写完)，实际写入磁盘由内核后续<strong>异步</strong>完成(通过<code>pdflush</code>或后台线程)</p>
+<p>利用内存作为磁盘的缓存，加速重复读操作，写操作延迟低(不需要等待磁盘完成)</p>
+<p><strong>双缓存问题</strong>:如果应用程序(如数据库)自己也有一个缓存(buffer pool)，数据会同时存在于页缓存和应用程序缓存中，浪费内存，且增加了两次数据复制(内核 &lt;-&gt; 用户空间)</p>
+<p><strong>不可控的刷盘时机</strong>:应用程序调用<code>write()</code>后，数据何时真正落盘不可控，对要求<strong>持久性</strong>的数据库来说，可能导致事务日志未及时落盘，违反<code>ACID</code>的<code>Durability</code>(持久性)</p>
+<p><code>内核通用策略不一定最优</code>:内核的预读，回写策略是为通用负载设计的，无法针对特定应用(如<code>B+Tree</code>随机写，顺序日志写)做精细优化</p>
+<p>待补充…</p>
+<p>直接I&#x2F;O(O_DIRECT标志):绕过页缓存，直接读写磁盘</p>
+<p>每次读写都需要<code>磁盘I/O</code>(没有内核自动缓存)，对随机读密集型负载可能变慢</p>
+<p>那为什么数据库(<code>MySQL InnoDB</code>，<code>PostgreSQL</code>)用直接I&#x2F;O，自己管缓存呢?</p>
+<p>因为他们比OS更了解数据的访问模式🤡</p>
+<p><code>fsync(int fd)</code>系统调用的作用?</p>
+<p>强制将指定文件在页缓存中所有已修改的数据(包括文件元数据)立即写入磁盘，并且会等待磁盘完成写入后才返回</p>
+<p><code>fdatasync()</code>类似，但只同步数据内容，不同步元数据(如修改时间)，通常更快一些</p>
+<p>数据库崩溃恢复为什么可靠?</p>
+<p>预写日志技术，<code>Write-Ahead Logging</code>(<strong>WAL</strong>)</p>
+<p>在修改实际数据页(如表中的行)之前，先将修改操作以<strong>日志</strong>形式写入一个<strong>只追加</strong>的日志文件(通常称为<code>redo log</code>)</p>
+<p>日志写入必须先于数据页的刷盘，也就是说，日志落盘后，数据库才认为事务提交成功，数据页可以在之后<strong>异步</strong>写入磁盘</p>
+<p>系统崩溃后重启时，数据库会重放日志中尚未应用到数据页的操作，将数据恢复到崩溃前的状态!</p>
+<p><code>Redis AOF</code>的<code>appendfsync</code>配置选项?</p>
+<p>待补充…</p>
+<h3 id="零拷贝-Zero-Copy-技术"><a href="#零拷贝-Zero-Copy-技术" class="headerlink" title="零拷贝(Zero-Copy)技术"></a>零拷贝(Zero-Copy)技术</h3><p>把文件数据发送给网络，不经过用户空间的技术</p>
+<p>传统路径:磁盘 -&gt; 内核缓冲区 -&gt; 用户缓冲区 -&gt; 内核socket缓冲区 -&gt; 网卡，4次拷贝</p>
+<p><code>sendfile()</code>系统调用:磁盘 -&gt; 内核缓冲区 -&gt; 网卡，2次拷贝，且不进入用户空间</p>
+<p><code>Nginx</code>，<code>Kafka</code>的高性能文件传输都依赖<code>sendfile</code></p>
+<p>Java的FileChannel.transferTo()就是对<code>sendfile</code>的<strong>封装</strong>(抽象)</p>
+<p><code>Kafka</code>为什么能处理百万级消息?</p>
+<p><code>零拷贝</code>+<code>顺序写磁盘</code>…</p>
+<p><code>Nginx</code>静态文件服务为什么快?</p>
+<p>待补充…</p>
+<h3 id="epoll原理"><a href="#epoll原理" class="headerlink" title="epoll原理"></a>epoll原理</h3><p>Linux最高效的I&#x2F;O事件通知机制</p>
+<p>复习一下</p>
+<p>select:每次调用把全部fd从用户态拷贝到内核，<code>O(n)</code>扫描，最多1024个fd</p>
+<p>poll:去掉fd数量限制，但还是<code>O(n)</code>扫描</p>
+<p><strong>epoll</strong>:内核维护就绪列表，只返回有事件的fd，<code>O(1)</code>!</p>
+<p><code>edge-triggered</code>(ET) vs <code>level-triggered</code>(LT)是<strong>epoll</strong>的两种工作模式，ET性能更高但编程更难</p>
+<p>Redis，Nginx底层都用epoll😱</p>
+<p>为什么C10K问题被epoll解决了?</p>
+<p>待补充…</p>
+<hr>
+<p>怎么这么复杂😭</p>
+<p>好多内容呀</p>
+<p>毕竟是几十年发展的历史(maybe)</p>
+<p>慢慢来吧</p>
+<p>累了</p>
+<p>先休息一会儿…</p>
+<hr>
+<p>可以忽略</p>
+<p>自言自语几句</p>
+<p>最近，我时常发问，学习这些内容的<strong>意义</strong>是什么?</p>
+<p>我尝试询问ai，翻阅论坛，其给出的回答不外乎:</p>
+<ul>
+<li><p>这些底层知识构成了真正理解计算机系统，解决复杂生产问题的基石</p>
+</li>
+<li><p>在实际工作中，它们无处不在</p>
+</li>
+<li><p>这些知识让你超越<code>调包侠</code>层次</p>
+</li>
+<li><p>面试官非常看重这种对底层原理的理解</p>
+</li>
+</ul>
+<p>这些千篇一律的回答真的是我想要的吗</p>
+<p>我不知道</p>
+<p>我开始思考</p>
+<p>不知怎的</p>
+<p><strong>斯多葛主义</strong></p>
+<p>这个词汇</p>
+<p>突兀地出现于我的脑海中</p>
+<p>依稀记得</p>
+<p>高中时</p>
+<p>我将其作为记诵的作文素材</p>
+<p>来来回回，反反复复地写</p>
+<p>却并没有真正理解</p>
+<p>直到现在</p>
+<p>有些事在我们控制之内</p>
+<p>有些事则在我们控制之外</p>
+<p>意义并不来自那些不可控的外在结果</p>
+<p>而来自我们如何<code>运用理性，选择德性，对待命运</code></p>
+<p>无论外界如何变化</p>
+<p>我始终以正确的态度做正确的事</p>
+<p>这就是意义本身</p>
+<p>意义不是附加在结果上的标签</p>
+<p>而是蕴含在行动过程中的内在价值</p>
+<p>这些话语</p>
+<p>曾经只是无脑地背下来</p>
+<p>现在却越来越<strong>明晰</strong></p>
+<p>是啊</p>
+<p>我永远无法控制</p>
+<p>这些知识在面试中是否会被问到?</p>
+<p>是否会为我带来升职加薪?</p>
+<p>外界会认可我的努力吗?</p>
+<p>但我所能控制的是</p>
+<p>我是否尽力地去梳理清楚了每一个知识点</p>
+<p>是否始终保持着<code>好奇心</code>，<code>自信心</code>与<code>专注力</code></p>
+<p>在遇到困难时是否坚持了思考</p>
+<p><strong>控制二分法</strong>教会我:</p>
+<p>把注意力放在后者</p>
+<p>因为那是真正属于我的部分</p>
+<p>而对前者保持平静</p>
+<p>因为它们不由我决定</p>
+<p>一如塞涅卡所言</p>
+<p>通往自由之路</p>
+<p>是不再等待外部的许诺</p>
+<p>最后</p>
+<p>如果你看到了这里</p>
+<p>祝愿你</p>
+<p>不要被未来的恐惧所困扰</p>
+<p>因为你将带着与现在相同的理性面对它</p>
+<p>生活愉快</p>
+<p>天天开心☺️</p>
 
                 
               </div>
@@ -748,7 +1032,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2026年3月29日</div>
+          <div>2026年3月30日</div>
         </div>
       
       
