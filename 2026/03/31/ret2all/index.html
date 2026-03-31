@@ -49,7 +49,7 @@
 <meta property="og:image" content="https://roxy5201314.github.io/images/121.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/122.png">
 <meta property="article:published_time" content="2026-03-31T10:42:17.000Z">
-<meta property="article:modified_time" content="2026-03-31T16:16:59.041Z">
+<meta property="article:modified_time" content="2026-03-31T16:29:03.112Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="ORW">
 <meta property="article:tag" content="SROP">
@@ -365,7 +365,7 @@
 <p>原来这是一个检测</p>
 <p>要求buf必须为四个<code>I love you I feel lonely</code>(全局变量<code>LOVE</code>)</p>
 <p>且RBP的值与返回地址不能被修改</p>
-<p>乍一看似乎就算没通过检测只是打印<code>You don&#39;t love me?``You don&#39;t keep it?</code></p>
+<p>乍一看似乎就算没通过检测只是打印<code>You don&#39;t love me?</code>和<code>You don&#39;t keep it?</code></p>
 <p>仔细一想</p>
 <p>puts底层会调用write，而write的fd1被沙箱禁用，便会直接退出程序</p>
 <p>也就是说前<code>0x70</code>字节确实不能动</p>
@@ -591,11 +591,11 @@
       
         <a href="/tags/ret2libc/" class="print-no-link">#ret2libc</a>
       
-        <a href="/tags/%E6%A0%88%E9%A3%8E%E6%B0%B4/" class="print-no-link">#栈风水</a>
-      
         <a href="/tags/magic-gadget/" class="print-no-link">#magic-gadget</a>
       
         <a href="/tags/partial-overwrite/" class="print-no-link">#partial overwrite</a>
+      
+        <a href="/tags/%E6%A0%88%E9%A3%8E%E6%B0%B4/" class="print-no-link">#栈风水</a>
       
         <a href="/tags/ret2syscall/" class="print-no-link">#ret2syscall</a>
       
