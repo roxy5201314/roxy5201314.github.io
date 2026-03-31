@@ -887,11 +887,11 @@
     
     <tags>
       
-      <tag>寄存器</tag>
-      
       <tag>shellcode编写</tag>
       
       <tag>汇编语言</tag>
+      
+      <tag>寄存器</tag>
       
     </tags>
     
@@ -999,13 +999,13 @@
       
       <tag>ORW</tag>
       
-      <tag>SROP</tag>
-      
-      <tag>ret2libc</tag>
+      <tag>内存布局</tag>
       
       <tag>寄存器</tag>
       
-      <tag>内存布局</tag>
+      <tag>SROP</tag>
+      
+      <tag>ret2libc</tag>
       
     </tags>
     
@@ -1032,9 +1032,9 @@
       
       <tag>栈迁移</tag>
       
-      <tag>ret2libc</tag>
-      
       <tag>内存布局</tag>
+      
+      <tag>ret2libc</tag>
       
     </tags>
     
@@ -1059,9 +1059,9 @@
     
     <tags>
       
-      <tag>内存布局</tag>
-      
       <tag>gdb</tag>
+      
+      <tag>内存布局</tag>
       
     </tags>
     
