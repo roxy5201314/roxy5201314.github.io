@@ -8,7 +8,7 @@
     <link href="/2026/04/01/network/"/>
     <url>/2026/04/01/network/</url>
     
-    <content type="html"><![CDATA[<h1 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h1><p>前言:</p><p>最近无论是打ctf还是日常学习</p><p>都离不开科学上网</p><p>我遇到了许多网络上的问题</p><p>包括但不限于</p><ul><li><p>VPN的原理是什么?</p></li><li><p><strong>netcat</strong>(<code>nc</code>)原理?</p></li><li><p><code>WebSocketReflectorX</code>(学长前辈们开发的ctf题目服务器连接工具)原理是什么?</p></li><li><p>为什么我明明开着<code>VPN</code>，但是在终端(<code>wsl</code>，<code>cmd</code>)中还是无法科学上网，使用<code>curl ip.sb</code>命令后发现ip依旧在广东?</p></li><li><p>我在<code>VMware</code>虚拟机中的<code>ubuntu</code>网络又是怎么来的?</p></li></ul><p>我都比较茫然</p><p>无力…</p><p>因此，现在开始<strong>网络</strong>的学习</p><p>以解决问题为导向</p><p>顺便学习基础知识</p><p>开始吧!</p>]]></content>
+    <content type="html"><![CDATA[<h1 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h1><p>前言:</p><p>最近无论是打ctf还是日常学习，生活，娱乐</p><p>都离不开科学上网</p><p>我遇到了许多网络上的问题</p><p>包括但不限于</p><ul><li><p>VPN的原理是什么?</p></li><li><p><strong>netcat</strong>(<code>nc</code>)原理?</p></li><li><p><code>WebSocketReflectorX</code>(学长前辈们开发的ctf题目服务器连接工具)原理是什么?</p></li><li><p>为什么我明明开着<code>VPN</code>，但是在终端(<code>wsl</code>，<code>cmd</code>)中还是无法科学上网，使用<code>curl ip.sb</code>命令后发现ip依旧在广东?</p></li><li><p>我在<code>VMware</code>虚拟机中的<code>ubuntu</code>网络又是怎么来的?</p></li><li><p>为什么深圳校区和广州校区同时连校园网可以在局域网下联机玩<code>mc</code>?</p></li></ul><p>我都比较茫然TT</p><p>因此，现在开始<strong>网络</strong>的学习</p><p>以解决问题为导向</p><p>顺便学习基础知识</p><p>开始吧!</p>]]></content>
     
     
     <categories>
@@ -63,21 +63,21 @@
       
       <tag>ORW</tag>
       
+      <tag>SROP</tag>
+      
+      <tag>ret2libc</tag>
+      
       <tag>magic-gadget</tag>
       
       <tag>partial overwrite</tag>
       
       <tag>栈风水</tag>
       
-      <tag>SROP</tag>
-      
       <tag>ret2syscall</tag>
       
       <tag>ret2text</tag>
       
       <tag>栈返回</tag>
-      
-      <tag>ret2libc</tag>
       
       <tag>dup2</tag>
       
@@ -662,11 +662,11 @@
       
       <tag>LeetCode</tag>
       
+      <tag>算法</tag>
+      
       <tag>异或</tag>
       
       <tag>trick</tag>
-      
-      <tag>算法</tag>
       
     </tags>
     
@@ -807,9 +807,9 @@
       
       <tag>LeetCode</tag>
       
-      <tag>算法</tag>
-      
       <tag>双指针</tag>
+      
+      <tag>算法</tag>
       
     </tags>
     
@@ -971,11 +971,11 @@
     
     <tags>
       
+      <tag>寄存器</tag>
+      
       <tag>shellcode编写</tag>
       
       <tag>汇编语言</tag>
-      
-      <tag>寄存器</tag>
       
     </tags>
     
@@ -1079,11 +1079,11 @@
     
     <tags>
       
-      <tag>内存布局</tag>
-      
       <tag>栈迁移</tag>
       
       <tag>ORW</tag>
+      
+      <tag>内存布局</tag>
       
       <tag>SROP</tag>
       
@@ -1114,9 +1114,9 @@
     
     <tags>
       
-      <tag>内存布局</tag>
-      
       <tag>栈迁移</tag>
+      
+      <tag>内存布局</tag>
       
       <tag>ret2libc</tag>
       
