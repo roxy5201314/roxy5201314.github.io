@@ -1,0 +1,852 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/666.jpg">
+  <link rel="icon" href="/img/666.jpg">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#647FBC">
+  <meta name="author" content="roxy">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Dirty Pageflags今天学习了一种在Linux内核中对PTE的exploitation技术，名为Dirty Pageflags 参考这位日本pwn大佬: https:&#x2F;&#x2F;ptr-yudai.hatenablog.com&#x2F;entry&#x2F;2025&#x2F;09&#x2F;14&#x2F;180326 前置知识PTE是Page Table Entry(页表项) 在OS的学习中，我们已经知道 它是虚拟内存管理中最核心的数据结">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dirty Pageflags Kernel pwn">
+<meta property="og:url" content="https://roxy5201314.github.io/2026/04/06/Dirty-Pageflags-Kernel-pwn/index.html">
+<meta property="og:site_name" content="roxy&#39;s blog">
+<meta property="og:description" content="Dirty Pageflags今天学习了一种在Linux内核中对PTE的exploitation技术，名为Dirty Pageflags 参考这位日本pwn大佬: https:&#x2F;&#x2F;ptr-yudai.hatenablog.com&#x2F;entry&#x2F;2025&#x2F;09&#x2F;14&#x2F;180326 前置知识PTE是Page Table Entry(页表项) 在OS的学习中，我们已经知道 它是虚拟内存管理中最核心的数据结">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://roxy5201314.github.io/images/135.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/136.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/137.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/138.png">
+<meta property="og:image" content="https://roxy5201314.github.io/images/140.png">
+<meta property="article:published_time" content="2026-04-06T15:07:58.000Z">
+<meta property="article:modified_time" content="2026-04-06T16:46:06.666Z">
+<meta property="article:author" content="roxy">
+<meta property="article:tag" content="&#x2F;etc&#x2F;passwd">
+<meta property="article:tag" content="Dirty Pageflags">
+<meta property="article:tag" content="PTE">
+<meta property="article:tag" content="buddy system">
+<meta property="article:tag" content="cpu">
+<meta property="article:tag" content="kernel">
+<meta property="article:tag" content="pwn">
+<meta property="article:tag" content="root">
+<meta property="article:tag" content="slab">
+<meta property="article:tag" content="spray">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://roxy5201314.github.io/images/135.png">
+  
+  
+  
+  <title>Dirty Pageflags Kernel pwn - roxy&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"roxy5201314.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/a.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Dirty Pageflags Kernel pwn"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-04-06 23:07" pubdate>
+          2026年4月6日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          43 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Dirty Pageflags Kernel pwn</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Dirty-Pageflags"><a href="#Dirty-Pageflags" class="headerlink" title="Dirty Pageflags"></a>Dirty Pageflags</h1><p>今天学习了一种在Linux内核中对<code>PTE</code>的exploitation技术，名为<strong>Dirty Pageflags</strong></p>
+<p>参考这位日本pwn大佬:</p>
+<p><a target="_blank" rel="noopener" href="https://ptr-yudai.hatenablog.com/entry/2025/09/14/180326">https://ptr-yudai.hatenablog.com/entry/2025/09/14/180326</a></p>
+<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p><strong>PTE</strong>是<code>Page Table Entry</code>(页表项)</p>
+<p>在OS的学习中，我们已经知道</p>
+<p>它是虚拟内存管理中最核心的数据结构之一，配合着<code>MMU</code>，用于将进程的<code>虚拟地址</code>转换为<code>物理地址</code>，并控制对该页面的<strong>访问权限</strong>和<strong>状态</strong></p>
+<p>每个页表项(通常对应<code>4KB</code>或<code>2MB</code>大小的内存页)记录了<code>虚拟页</code>被映射到了哪个<code>物理页框</code>(物理页帧号，<strong>PFN</strong>)</p>
+<p>在x86-64架构下，一个PTE的结构如下所示:</p>
+<p><img src="/images/135.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>其中52-62位是留给内核软件用的<code>自由位</code></p>
+<p>第63位见下面qwq</p>
+<p>0-51位便是上面所说的PFN(物理页帧号)</p>
+<p>而因为一个物理页的页大小是<code>4KB</code>，即4096字节，所以其低12位地址为0，只需存储高40位地址即可</p>
+<p>故0-11位作为<code>标志位</code>使用</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">物理地址 = (PFN &lt;&lt; 12) + 页内偏移<br></code></pre></td></tr></table></figure>
+
+<p>我们重点关注以下<strong>标志位</strong>(Pageflags):</p>
+<ul>
+<li><p>0 位 -&gt; P(present) 用于记录页面是否在物理内存中，如果为1，则存在，如果为0，则不存在，访问该页会触发缺页异常(<code>page fault</code>)</p>
+</li>
+<li><p>1 位 -&gt; <strong>R&#x2F;W</strong>(read&#x2F;write) <strong>用于记录是否可写，0代表只读，1则代表可读写</strong></p>
+</li>
+<li><p>2 位 -&gt; U&#x2F;S(user&#x2F;supervisor) 用于记录允许访问的权限级别，0代表内核态才允许访问(ring 0-2)，1则用户态亦可访问(ring 3)</p>
+</li>
+<li><p>6 位 -&gt; <strong>D</strong>(dirty) 是否被写入过，由<code>CPU</code>设置，内核用于决定换出时是否需要写回<code>磁盘</code>，即<code>脏页</code></p>
+</li>
+<li><p>63 位 -&gt; XD(execute disable) cpu从该页所取的指令是否允许执行，0为可执行，1则不可执行，我们也可以叫它<code>NX</code>😄</p>
+</li>
+</ul>
+<p>试想一下</p>
+<p>如果PTE中一个虚拟地址对应记录一个物理地址，而PTE还是要放在内存的</p>
+<p>一个进程的页表本身就会大得无法接受</p>
+<p>因此，Linux采用分层的<strong>多级页表</strong>来按需分配，以节省内存</p>
+<p>我们重点关注x86-64架构下的四级页表结构</p>
+<p><img src="/images/136.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>如图所示</p>
+<p>对于一个64位的虚拟地址</p>
+<p>其低48位拆分为多个索引字段</p>
+<p>PGD索引(9 bits) -&gt; PUD索引(9 bits) -&gt; PMD索引(9 bits) -&gt; PTE索引(9 bits) -&gt; 页内偏移(12 bits)</p>
+<p>具体:</p>
+<p><img src="/images/137.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<div class="note note-info">
+            <p>对于一个虚拟地址</p> <p><code>CPU</code>的<code>MMU</code>查找过程如下:</p> <p>从<code>CR3</code>寄存器获得<code>PGD</code>页的物理地址</p> <p>取虚拟地址的<code>bits 47-39</code>作为PGD索引，找到对应的PUD页表项(如果该PGD项为<code>null</code>，则触发<code>page fault</code>)</p> <p>取<code>bits 38-30</code>作为PUD索引，找到PMD页表项</p> <p>取<code>bits 29-21</code>作为PMD索引，找到PTE页表项</p> <p>取<code>bits 20-12</code>作为PTE索引，找到<strong>物理页框</strong></p> <p>ps:PTE中包含PFN与标志位，上面已经介绍过了</p> <p>最后<code>bits 11-0</code>作为页内偏移，得到最终的物理地址</p> 
+          </div>
+
+<p>同时，x86-64中每一级页表都是4KB，而一个<code>entry</code>是8字节，所以每一级有<strong>512</strong>项</p>
+<p>最后，虚拟地址的高16位作用是什么呢?</p>
+<p>它们的内容必须与第47位(虚拟地址的最高有效位)完全相同!</p>
+<p>这种形式的地址被称为<strong>规范地址</strong>(Canonical Address)</p>
+<p>这本质上是一种<strong>符号扩展</strong>(Sign Extension)，将地址空间一分为二</p>
+<p>当第47位为0时，高16位也全为0，地址落在<strong>用户空间</strong>(<code>0x0000_0000_0000_0000</code> ~ <code>0x0000_7FFF_FFFF_FFFF</code>)</p>
+<p>当第47位为1时，高16位也全为1，地址落在<strong>内核空间</strong>(<code>0xFFFF_8000_0000_0000</code> ~ <code>0xFFFF_FFFF_FFFF_FFFF</code>)</p>
+<p>CPU的<code>MMU</code>只处理<strong>规范地址</strong></p>
+<p>如果软件试图访问非规范地址，则会直接触发**#GP异常**(General Protection Fault)</p>
+<p>这样设计的关键考量是为未来的扩展留出空间</p>
+<p>如果将来需要更大的地址空间，硬件可以增加页表层级(比如到57位)，那些高16位目前是全1或全0的规范地址，在未来依然会是有效的规范地址，保证了<strong>向前兼容性</strong>!</p>
+<div class="note note-secondary">
+            <p>ASLR KASLR PIE 原理</p> <p><code>/proc/sys/kernel/randomize_va_space</code></p> <p><strong>熵</strong>?</p> <p>待补充…</p> 
+          </div>
+
+<div class="note note-danger">
+            <p>内核保护:</p> <p>SMEP SMAP KPTI KASLR</p> <p>待补充…</p> 
+          </div>
+
+<h2 id="exploitation"><a href="#exploitation" class="headerlink" title="exploitation"></a>exploitation</h2><p>了解了前置知识</p>
+<p>我们来看看具体的exploitation方法</p>
+<h3 id="Dirty-Pagetable"><a href="#Dirty-Pagetable" class="headerlink" title="Dirty Pagetable"></a>Dirty Pagetable</h3><p>名字似乎很像</p>
+<p>但完全不一样</p>
+<p>我还没学</p>
+<p>故引用原文…</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">Dirty Pagetable is a powerful exploitation technique that targets heap vulnerabilities in the Linux kernel.<br><br>The core idea is to overlap a freed object with a page table entry (PTE). By writing to the freed object, an attacker can directly manipulate the page table. Since each PTE maps to a physical memory address, this provides extremely strong control over physical memory. As a result, Dirty Pagetable can bypass critical security mechanisms such as KASLR, SMAP, and SMEP.<br></code></pre></td></tr></table></figure>
+
+<h3 id="Dirty-Pageflags-1"><a href="#Dirty-Pageflags-1" class="headerlink" title="Dirty Pageflags"></a>Dirty Pageflags</h3><p>不同于<code>Dirty Pagetable</code>操纵整个PTE以达成任意物理地址读写原语</p>
+<p><code>Dirty Pageflags</code>关注操纵PTE的标志位以完成利用并最终提权</p>
+<p>那么哪个标志位有助于我们的exploitation呢?</p>
+<p>U&#x2F;S?</p>
+<p>XD?</p>
+<p>然而并不是</p>
+<p>它们虽然涉及访问与执行权限控制，但却不能真正帮助我们exploitation</p>
+<p>考虑一下R&#x2F;W</p>
+<p>想象一个只读文件</p>
+<p>比如(<code>/etc/passwd</code>)</p>
+<p><img src="/images/138.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>我们操纵其PTE的R&#x2F;W标志位</p>
+<p>利用<code>UAF</code>等漏洞</p>
+<p>将0置为1</p>
+<p>只读变为可读写</p>
+<p>随后我们向<code>/etc/passwd</code>中写入恶意内容</p>
+<p><img src="/images/140.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
+<p>虽然此时修改只发生在内存中，还没有被写回到文件</p>
+<p>但是，CPU会自动把PTE中的<code>D</code>(dirty)位设置为1，表示这个页面已经被修改过</p>
+<p>最后，当内存区域被解除映射(<code>unmap</code>)时，Linux内核看到该页的<code>D</code>位被置1，就会认为这个页面必须被回写到它对应的后备文件</p>
+<p>于是原本应该只读的文件(<code>/etc/passwd</code>)就被我们所写的恶意内容所覆盖了!</p>
+<p>root到手~</p>
+<h2 id="example"><a href="#example" class="headerlink" title="example"></a>example</h2><p>题目来自2025 Black Hat MEA的资格赛pwn</p>
+<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>下面是<code>vuln.c</code></p>
+<p>不用逆向，真不错</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fs.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/miscdevice.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/mutex.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/slab.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/uaccess.h&gt;</span></span><br><br>MODULE_LICENSE(<span class="hljs-string">&quot;GPL&quot;</span>);<br>MODULE_AUTHOR(<span class="hljs-string">&quot;ptr-yudai&quot;</span>);<br>MODULE_DESCRIPTION(<span class="hljs-string">&quot;A vulnerable driver for a CTF&quot;</span>);<br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CMD_ALLOC   0x0268</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CMD_INC     0x0298</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CMD_SEL     0x01c1</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CMD_DELETE  0x0831</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX_OBJ_NUM 0x100</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PAD_SIZE    0x7f8</span><br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">obj</span> &#123;</span><br>  <span class="hljs-type">char</span> buf[PAD_SIZE];<br>  <span class="hljs-type">size_t</span> cnt;<br>&#125;;<br><br><span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kmem_cache</span> *<span class="hljs-title">obj_cachep</span>;</span><br><span class="hljs-type">static</span> <span class="hljs-title function_">DEFINE_MUTEX</span><span class="hljs-params">(module_lock)</span>;<br><br><span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> inc_used = <span class="hljs-number">0</span>;<br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">obj</span> *<span class="hljs-title">selected</span> =</span> <span class="hljs-number">0</span>;<br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">obj</span> *<span class="hljs-title">obj_array</span>[<span class="hljs-title">MAX_OBJ_NUM</span>] =</span> &#123; <span class="hljs-literal">NULL</span> &#125;;<br><br><span class="hljs-type">static</span> <span class="hljs-type">long</span> <span class="hljs-title function_">module_ioctl</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> file *file, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> cmd, <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> arg)</span> &#123;<br>  <span class="hljs-type">long</span> ret = -EINVAL;<br>  mutex_lock(&amp;module_lock);<br><br>  <span class="hljs-keyword">if</span> (arg &gt;= MAX_OBJ_NUM)<br>    <span class="hljs-keyword">goto</span> out;<br><br>  <span class="hljs-keyword">switch</span> (cmd) &#123;<br>    <span class="hljs-keyword">case</span> CMD_ALLOC:<br>      obj_array[arg] = kmem_cache_zalloc(obj_cachep, GFP_KERNEL);<br>      ret = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">case</span> CMD_SEL:<br>      <span class="hljs-keyword">if</span> (!obj_array[arg])<br>        <span class="hljs-keyword">goto</span> out;<br>      selected = obj_array[arg];<br>      ret = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">case</span> CMD_INC:<br>      <span class="hljs-keyword">if</span> (inc_used++ &gt; <span class="hljs-number">1</span>)<br>        <span class="hljs-keyword">goto</span> out;<br>      selected-&gt;cnt++;<br>      ret = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">case</span> CMD_DELETE:<br>      <span class="hljs-keyword">if</span> (!obj_array[arg])<br>        <span class="hljs-keyword">goto</span> out;<br>      kmem_cache_free(obj_cachep, obj_array[arg]);<br>      obj_array[arg] = <span class="hljs-literal">NULL</span>;<br>      ret = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">break</span>;<br>  &#125;<br><br> out:<br>  mutex_unlock(&amp;module_lock);<br>  <span class="hljs-keyword">return</span> ret;<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">module_fops</span> =</span> &#123;<br>  .owner          = THIS_MODULE,<br>  .unlocked_ioctl = module_ioctl,<br>&#125;;<br><br><span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">miscdevice</span> <span class="hljs-title">vuln_dev</span> =</span> &#123;<br>  .minor = MISC_DYNAMIC_MINOR,<br>  .name = <span class="hljs-string">&quot;vuln&quot;</span>,<br>  .fops = &amp;module_fops<br>&#125;;<br><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">module_initialize</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>  <span class="hljs-keyword">if</span> (misc_register(&amp;vuln_dev) != <span class="hljs-number">0</span>)<br>    <span class="hljs-keyword">return</span> -EBUSY;<br><br>  obj_cachep = KMEM_CACHE(obj, <span class="hljs-number">0</span>);<br>  <span class="hljs-keyword">if</span> (!obj_cachep) &#123;<br>    misc_deregister(&amp;vuln_dev);<br>    <span class="hljs-keyword">return</span> -EBUSY;<br>  &#125;<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> __exit <span class="hljs-title function_">module_cleanup</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>  misc_deregister(&amp;vuln_dev);<br>  mutex_destroy(&amp;module_lock);<br>&#125;<br><br>module_init(module_initialize);<br>module_exit(module_cleanup);<br></code></pre></td></tr></table></figure>
+
+<p>内核模块<code>vuln.ko</code>提供了以下<code>ioctl</code>命令:</p>
+<p>CMD_ALLOC -&gt; 分配一个<code>struct obj</code>(大小为<code>0x800</code>字节)，存入<code>obj_array[index]</code></p>
+<p>CMD_SEL -&gt; 将<code>selected</code>指针指向<code>obj_array[index]</code></p>
+<p>CMD_INC -&gt; 执行<code>selected-&gt;cnt++</code>(但限制最多连续两次)</p>
+<p>CMD_DELETE -&gt; 释放<code>obj_array[index]</code>并清空数组项，<strong>但不清除selected</strong></p>
+<p>漏洞点很明显</p>
+<p>释放对象后，<code>selected</code>仍指向已释放内存</p>
+<p>通过两次<code>CMD_INC</code>，可以修改这块释放内存中的<code>cnt</code>字段(偏移<code>0x7f8</code>处，8字节)</p>
+<p><strong>UAF</strong>存在</p>
+<p>累了</p>
+<p>休息</p>
+<p>明天再写</p>
+<p>晚安</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Kernel/" class="category-chain-item">Kernel</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/PTE/" class="print-no-link">#PTE</a>
+      
+        <a href="/tags/Dirty-Pageflags/" class="print-no-link">#Dirty Pageflags</a>
+      
+        <a href="/tags/kernel/" class="print-no-link">#kernel</a>
+      
+        <a href="/tags/pwn/" class="print-no-link">#pwn</a>
+      
+        <a href="/tags/root/" class="print-no-link">#root</a>
+      
+        <a href="/tags/spray/" class="print-no-link">#spray</a>
+      
+        <a href="/tags/buddy-system/" class="print-no-link">#buddy system</a>
+      
+        <a href="/tags/slab/" class="print-no-link">#slab</a>
+      
+        <a href="/tags/cpu/" class="print-no-link">#cpu</a>
+      
+        <a href="/tags/etc-passwd/" class="print-no-link">#/etc/passwd</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Dirty Pageflags Kernel pwn</div>
+      <div>https://roxy5201314.github.io/2026/04/06/Dirty-Pageflags-Kernel-pwn/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>roxy</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年4月6日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026年4月7日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/04/05/hello-kernel-pwn/" title="hello kernel pwn!">
+                        <span class="hidden-mobile">hello kernel pwn!</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>roxy</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>QQ</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

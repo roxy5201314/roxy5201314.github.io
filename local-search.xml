@@ -4,6 +4,49 @@
   
   
   <entry>
+    <title>Dirty Pageflags Kernel pwn</title>
+    <link href="/2026/04/06/Dirty-Pageflags-Kernel-pwn/"/>
+    <url>/2026/04/06/Dirty-Pageflags-Kernel-pwn/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Dirty-Pageflags"><a href="#Dirty-Pageflags" class="headerlink" title="Dirty Pageflags"></a>Dirty Pageflags</h1><p>今天学习了一种在Linux内核中对<code>PTE</code>的exploitation技术，名为<strong>Dirty Pageflags</strong></p><p>参考这位日本pwn大佬:</p><p><a href="https://ptr-yudai.hatenablog.com/entry/2025/09/14/180326">https://ptr-yudai.hatenablog.com/entry/2025/09/14/180326</a></p><h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p><strong>PTE</strong>是<code>Page Table Entry</code>(页表项)</p><p>在OS的学习中，我们已经知道</p><p>它是虚拟内存管理中最核心的数据结构之一，配合着<code>MMU</code>，用于将进程的<code>虚拟地址</code>转换为<code>物理地址</code>，并控制对该页面的<strong>访问权限</strong>和<strong>状态</strong></p><p>每个页表项(通常对应<code>4KB</code>或<code>2MB</code>大小的内存页)记录了<code>虚拟页</code>被映射到了哪个<code>物理页框</code>(物理页帧号，<strong>PFN</strong>)</p><p>在x86-64架构下，一个PTE的结构如下所示:</p><p><img src="/images/135.png" alt="如图"></p><p>其中52-62位是留给内核软件用的<code>自由位</code></p><p>第63位见下面qwq</p><p>0-51位便是上面所说的PFN(物理页帧号)</p><p>而因为一个物理页的页大小是<code>4KB</code>，即4096字节，所以其低12位地址为0，只需存储高40位地址即可</p><p>故0-11位作为<code>标志位</code>使用</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">物理地址 = (PFN &lt;&lt; 12) + 页内偏移<br></code></pre></td></tr></table></figure><p>我们重点关注以下<strong>标志位</strong>(Pageflags):</p><ul><li><p>0 位 -&gt; P(present) 用于记录页面是否在物理内存中，如果为1，则存在，如果为0，则不存在，访问该页会触发缺页异常(<code>page fault</code>)</p></li><li><p>1 位 -&gt; <strong>R&#x2F;W</strong>(read&#x2F;write) <strong>用于记录是否可写，0代表只读，1则代表可读写</strong></p></li><li><p>2 位 -&gt; U&#x2F;S(user&#x2F;supervisor) 用于记录允许访问的权限级别，0代表内核态才允许访问(ring 0-2)，1则用户态亦可访问(ring 3)</p></li><li><p>6 位 -&gt; <strong>D</strong>(dirty) 是否被写入过，由<code>CPU</code>设置，内核用于决定换出时是否需要写回<code>磁盘</code>，即<code>脏页</code></p></li><li><p>63 位 -&gt; XD(execute disable) cpu从该页所取的指令是否允许执行，0为可执行，1则不可执行，我们也可以叫它<code>NX</code>😄</p></li></ul><p>试想一下</p><p>如果PTE中一个虚拟地址对应记录一个物理地址，而PTE还是要放在内存的</p><p>一个进程的页表本身就会大得无法接受</p><p>因此，Linux采用分层的<strong>多级页表</strong>来按需分配，以节省内存</p><p>我们重点关注x86-64架构下的四级页表结构</p><p><img src="/images/136.png" alt="如图"></p><p>如图所示</p><p>对于一个64位的虚拟地址</p><p>其低48位拆分为多个索引字段</p><p>PGD索引(9 bits) -&gt; PUD索引(9 bits) -&gt; PMD索引(9 bits) -&gt; PTE索引(9 bits) -&gt; 页内偏移(12 bits)</p><p>具体:</p><p><img src="/images/137.png" alt="如图"></p><div class="note note-info">            <p>对于一个虚拟地址</p> <p><code>CPU</code>的<code>MMU</code>查找过程如下:</p> <p>从<code>CR3</code>寄存器获得<code>PGD</code>页的物理地址</p> <p>取虚拟地址的<code>bits 47-39</code>作为PGD索引，找到对应的PUD页表项(如果该PGD项为<code>null</code>，则触发<code>page fault</code>)</p> <p>取<code>bits 38-30</code>作为PUD索引，找到PMD页表项</p> <p>取<code>bits 29-21</code>作为PMD索引，找到PTE页表项</p> <p>取<code>bits 20-12</code>作为PTE索引，找到<strong>物理页框</strong></p> <p>ps:PTE中包含PFN与标志位，上面已经介绍过了</p> <p>最后<code>bits 11-0</code>作为页内偏移，得到最终的物理地址</p>           </div><p>同时，x86-64中每一级页表都是4KB，而一个<code>entry</code>是8字节，所以每一级有<strong>512</strong>项</p><p>最后，虚拟地址的高16位作用是什么呢?</p><p>它们的内容必须与第47位(虚拟地址的最高有效位)完全相同!</p><p>这种形式的地址被称为<strong>规范地址</strong>(Canonical Address)</p><p>这本质上是一种<strong>符号扩展</strong>(Sign Extension)，将地址空间一分为二</p><p>当第47位为0时，高16位也全为0，地址落在<strong>用户空间</strong>(<code>0x0000_0000_0000_0000</code> ~ <code>0x0000_7FFF_FFFF_FFFF</code>)</p><p>当第47位为1时，高16位也全为1，地址落在<strong>内核空间</strong>(<code>0xFFFF_8000_0000_0000</code> ~ <code>0xFFFF_FFFF_FFFF_FFFF</code>)</p><p>CPU的<code>MMU</code>只处理<strong>规范地址</strong></p><p>如果软件试图访问非规范地址，则会直接触发**#GP异常**(General Protection Fault)</p><p>这样设计的关键考量是为未来的扩展留出空间</p><p>如果将来需要更大的地址空间，硬件可以增加页表层级(比如到57位)，那些高16位目前是全1或全0的规范地址，在未来依然会是有效的规范地址，保证了<strong>向前兼容性</strong>!</p><div class="note note-secondary">            <p>ASLR KASLR PIE 原理</p> <p><code>/proc/sys/kernel/randomize_va_space</code></p> <p><strong>熵</strong>?</p> <p>待补充…</p>           </div><div class="note note-danger">            <p>内核保护:</p> <p>SMEP SMAP KPTI KASLR</p> <p>待补充…</p>           </div><h2 id="exploitation"><a href="#exploitation" class="headerlink" title="exploitation"></a>exploitation</h2><p>了解了前置知识</p><p>我们来看看具体的exploitation方法</p><h3 id="Dirty-Pagetable"><a href="#Dirty-Pagetable" class="headerlink" title="Dirty Pagetable"></a>Dirty Pagetable</h3><p>名字似乎很像</p><p>但完全不一样</p><p>我还没学</p><p>故引用原文…</p><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs text">Dirty Pagetable is a powerful exploitation technique that targets heap vulnerabilities in the Linux kernel.<br><br>The core idea is to overlap a freed object with a page table entry (PTE). By writing to the freed object, an attacker can directly manipulate the page table. Since each PTE maps to a physical memory address, this provides extremely strong control over physical memory. As a result, Dirty Pagetable can bypass critical security mechanisms such as KASLR, SMAP, and SMEP.<br></code></pre></td></tr></table></figure><h3 id="Dirty-Pageflags-1"><a href="#Dirty-Pageflags-1" class="headerlink" title="Dirty Pageflags"></a>Dirty Pageflags</h3><p>不同于<code>Dirty Pagetable</code>操纵整个PTE以达成任意物理地址读写原语</p><p><code>Dirty Pageflags</code>关注操纵PTE的标志位以完成利用并最终提权</p><p>那么哪个标志位有助于我们的exploitation呢?</p><p>U&#x2F;S?</p><p>XD?</p><p>然而并不是</p><p>它们虽然涉及访问与执行权限控制，但却不能真正帮助我们exploitation</p><p>考虑一下R&#x2F;W</p><p>想象一个只读文件</p><p>比如(<code>/etc/passwd</code>)</p><p><img src="/images/138.png" alt="如图"></p><p>我们操纵其PTE的R&#x2F;W标志位</p><p>利用<code>UAF</code>等漏洞</p><p>将0置为1</p><p>只读变为可读写</p><p>随后我们向<code>/etc/passwd</code>中写入恶意内容</p><p><img src="/images/140.png" alt="如图"></p><p>虽然此时修改只发生在内存中，还没有被写回到文件</p><p>但是，CPU会自动把PTE中的<code>D</code>(dirty)位设置为1，表示这个页面已经被修改过</p><p>最后，当内存区域被解除映射(<code>unmap</code>)时，Linux内核看到该页的<code>D</code>位被置1，就会认为这个页面必须被回写到它对应的后备文件</p><p>于是原本应该只读的文件(<code>/etc/passwd</code>)就被我们所写的恶意内容所覆盖了!</p><p>root到手~</p><h2 id="example"><a href="#example" class="headerlink" title="example"></a>example</h2><p>题目来自2025 Black Hat MEA的资格赛pwn</p><h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>下面是<code>vuln.c</code></p><p>不用逆向，真不错</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/fs.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/miscdevice.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/module.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/mutex.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/slab.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;linux/uaccess.h&gt;</span></span><br><br>MODULE_LICENSE(<span class="hljs-string">&quot;GPL&quot;</span>);<br>MODULE_AUTHOR(<span class="hljs-string">&quot;ptr-yudai&quot;</span>);<br>MODULE_DESCRIPTION(<span class="hljs-string">&quot;A vulnerable driver for a CTF&quot;</span>);<br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CMD_ALLOC   0x0268</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CMD_INC     0x0298</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CMD_SEL     0x01c1</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> CMD_DELETE  0x0831</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX_OBJ_NUM 0x100</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PAD_SIZE    0x7f8</span><br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">obj</span> &#123;</span><br>  <span class="hljs-type">char</span> buf[PAD_SIZE];<br>  <span class="hljs-type">size_t</span> cnt;<br>&#125;;<br><br><span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">kmem_cache</span> *<span class="hljs-title">obj_cachep</span>;</span><br><span class="hljs-type">static</span> <span class="hljs-title function_">DEFINE_MUTEX</span><span class="hljs-params">(module_lock)</span>;<br><br><span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> inc_used = <span class="hljs-number">0</span>;<br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">obj</span> *<span class="hljs-title">selected</span> =</span> <span class="hljs-number">0</span>;<br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">obj</span> *<span class="hljs-title">obj_array</span>[<span class="hljs-title">MAX_OBJ_NUM</span>] =</span> &#123; <span class="hljs-literal">NULL</span> &#125;;<br><br><span class="hljs-type">static</span> <span class="hljs-type">long</span> <span class="hljs-title function_">module_ioctl</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> file *file, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> cmd, <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> arg)</span> &#123;<br>  <span class="hljs-type">long</span> ret = -EINVAL;<br>  mutex_lock(&amp;module_lock);<br><br>  <span class="hljs-keyword">if</span> (arg &gt;= MAX_OBJ_NUM)<br>    <span class="hljs-keyword">goto</span> out;<br><br>  <span class="hljs-keyword">switch</span> (cmd) &#123;<br>    <span class="hljs-keyword">case</span> CMD_ALLOC:<br>      obj_array[arg] = kmem_cache_zalloc(obj_cachep, GFP_KERNEL);<br>      ret = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">case</span> CMD_SEL:<br>      <span class="hljs-keyword">if</span> (!obj_array[arg])<br>        <span class="hljs-keyword">goto</span> out;<br>      selected = obj_array[arg];<br>      ret = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">case</span> CMD_INC:<br>      <span class="hljs-keyword">if</span> (inc_used++ &gt; <span class="hljs-number">1</span>)<br>        <span class="hljs-keyword">goto</span> out;<br>      selected-&gt;cnt++;<br>      ret = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">break</span>;<br><br>    <span class="hljs-keyword">case</span> CMD_DELETE:<br>      <span class="hljs-keyword">if</span> (!obj_array[arg])<br>        <span class="hljs-keyword">goto</span> out;<br>      kmem_cache_free(obj_cachep, obj_array[arg]);<br>      obj_array[arg] = <span class="hljs-literal">NULL</span>;<br>      ret = <span class="hljs-number">0</span>;<br>      <span class="hljs-keyword">break</span>;<br>  &#125;<br><br> out:<br>  mutex_unlock(&amp;module_lock);<br>  <span class="hljs-keyword">return</span> ret;<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file_operations</span> <span class="hljs-title">module_fops</span> =</span> &#123;<br>  .owner          = THIS_MODULE,<br>  .unlocked_ioctl = module_ioctl,<br>&#125;;<br><br><span class="hljs-type">static</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">miscdevice</span> <span class="hljs-title">vuln_dev</span> =</span> &#123;<br>  .minor = MISC_DYNAMIC_MINOR,<br>  .name = <span class="hljs-string">&quot;vuln&quot;</span>,<br>  .fops = &amp;module_fops<br>&#125;;<br><br><span class="hljs-type">static</span> <span class="hljs-type">int</span> __init <span class="hljs-title function_">module_initialize</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>  <span class="hljs-keyword">if</span> (misc_register(&amp;vuln_dev) != <span class="hljs-number">0</span>)<br>    <span class="hljs-keyword">return</span> -EBUSY;<br><br>  obj_cachep = KMEM_CACHE(obj, <span class="hljs-number">0</span>);<br>  <span class="hljs-keyword">if</span> (!obj_cachep) &#123;<br>    misc_deregister(&amp;vuln_dev);<br>    <span class="hljs-keyword">return</span> -EBUSY;<br>  &#125;<br><br>  <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> __exit <span class="hljs-title function_">module_cleanup</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>  misc_deregister(&amp;vuln_dev);<br>  mutex_destroy(&amp;module_lock);<br>&#125;<br><br>module_init(module_initialize);<br>module_exit(module_cleanup);<br></code></pre></td></tr></table></figure><p>内核模块<code>vuln.ko</code>提供了以下<code>ioctl</code>命令:</p><p>CMD_ALLOC -&gt; 分配一个<code>struct obj</code>(大小为<code>0x800</code>字节)，存入<code>obj_array[index]</code></p><p>CMD_SEL -&gt; 将<code>selected</code>指针指向<code>obj_array[index]</code></p><p>CMD_INC -&gt; 执行<code>selected-&gt;cnt++</code>(但限制最多连续两次)</p><p>CMD_DELETE -&gt; 释放<code>obj_array[index]</code>并清空数组项，<strong>但不清除selected</strong></p><p>漏洞点很明显</p><p>释放对象后，<code>selected</code>仍指向已释放内存</p><p>通过两次<code>CMD_INC</code>，可以修改这块释放内存中的<code>cnt</code>字段(偏移<code>0x7f8</code>处，8字节)</p><p><strong>UAF</strong>存在</p><p>累了</p><p>休息</p><p>明天再写</p><p>晚安</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Kernel</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>PTE</tag>
+      
+      <tag>Dirty Pageflags</tag>
+      
+      <tag>kernel</tag>
+      
+      <tag>pwn</tag>
+      
+      <tag>root</tag>
+      
+      <tag>spray</tag>
+      
+      <tag>buddy system</tag>
+      
+      <tag>slab</tag>
+      
+      <tag>cpu</tag>
+      
+      <tag>/etc/passwd</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>hello kernel pwn!</title>
     <link href="/2026/04/05/hello-kernel-pwn/"/>
     <url>/2026/04/05/hello-kernel-pwn/</url>
@@ -20,15 +63,15 @@
     
     <tags>
       
-      <tag>qemu</tag>
-      
-      <tag>root</tag>
-      
-      <tag>linux</tag>
-      
       <tag>kernel</tag>
       
       <tag>pwn</tag>
+      
+      <tag>root</tag>
+      
+      <tag>qemu</tag>
+      
+      <tag>linux</tag>
       
       <tag>page cache</tag>
       
@@ -584,9 +627,9 @@
       
       <tag>LeetCode</tag>
       
-      <tag>数据结构</tag>
-      
       <tag>二叉树</tag>
+      
+      <tag>数据结构</tag>
       
     </tags>
     
@@ -802,9 +845,9 @@
       
       <tag>LeetCode</tag>
       
-      <tag>栈</tag>
-      
       <tag>数据结构</tag>
+      
+      <tag>栈</tag>
       
     </tags>
     
@@ -1055,9 +1098,9 @@
     
     <tags>
       
-      <tag>fmt</tag>
-      
       <tag>ret2GOT</tag>
+      
+      <tag>fmt</tag>
       
     </tags>
     
@@ -1138,13 +1181,13 @@
       
       <tag>ORW</tag>
       
+      <tag>内存布局</tag>
+      
       <tag>SROP</tag>
       
       <tag>ret2libc</tag>
       
       <tag>寄存器</tag>
-      
-      <tag>内存布局</tag>
       
     </tags>
     
@@ -1171,9 +1214,9 @@
       
       <tag>栈迁移</tag>
       
-      <tag>ret2libc</tag>
-      
       <tag>内存布局</tag>
+      
+      <tag>ret2libc</tag>
       
     </tags>
     
@@ -1198,9 +1241,9 @@
     
     <tags>
       
-      <tag>内存布局</tag>
-      
       <tag>gdb</tag>
+      
+      <tag>内存布局</tag>
       
     </tags>
     
