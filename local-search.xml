@@ -165,11 +165,11 @@
       
       <tag>ret2libc</tag>
       
+      <tag>栈风水</tag>
+      
       <tag>magic-gadget</tag>
       
       <tag>partial overwrite</tag>
-      
-      <tag>栈风水</tag>
       
       <tag>ret2syscall</tag>
       
@@ -1183,13 +1183,13 @@
       
       <tag>ORW</tag>
       
-      <tag>内存布局</tag>
-      
       <tag>SROP</tag>
       
       <tag>ret2libc</tag>
       
       <tag>寄存器</tag>
+      
+      <tag>内存布局</tag>
       
     </tags>
     
@@ -1216,9 +1216,9 @@
       
       <tag>栈迁移</tag>
       
-      <tag>内存布局</tag>
-      
       <tag>ret2libc</tag>
+      
+      <tag>内存布局</tag>
       
     </tags>
     
@@ -1243,9 +1243,9 @@
     
     <tags>
       
-      <tag>gdb</tag>
-      
       <tag>内存布局</tag>
+      
+      <tag>gdb</tag>
       
     </tags>
     
