@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://roxy5201314.github.io/images/18.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/19.png">
 <meta property="article:published_time" content="2026-01-17T04:44:55.000Z">
-<meta property="article:modified_time" content="2026-02-28T03:52:33.744Z">
+<meta property="article:modified_time" content="2026-04-15T16:52:03.897Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="LeetCode">
 <meta property="article:tag" content="哈希表">
@@ -255,7 +255,7 @@
         
         
         
-          25 分钟
+          24 分钟
         
       </span>
     
@@ -314,13 +314,13 @@
 
 <p><img src="/images/16.png" srcset="/img/loading.gif" lazyload alt="6"></p>
 <p>此时空间复杂度是<code>O(n)</code></p>
-<p>可以看到确实快了一些，但是还不够，排序的时间复杂度为$O(n \log n)$，能不能不排序，直接实现快速查找？</p>
+<p>可以看到确实快了一些，但是还不够，排序的时间复杂度为$O(n \log n)$，能不能不排序，直接实现快速查找?</p>
 <p>这便要引出今天的数据结构:<strong>哈希表</strong></p>
-<p>我们对题目再重新思考一下，题目其实在问，对于每个数<code>x</code>，是否存在一个数<code>y = target - x</code>？</p>
+<p>我们对题目再重新思考一下，题目其实在问，对于每个数<code>x</code>，是否存在一个数<code>y = target - x</code>?</p>
 <p>这本质其实是一个<code>查找</code>问题，而不是<code>枚举</code>问题</p>
-<p>我们可以这样做…</p>
+<p>我们可以这样做</p>
 <p>先遍历数组，对当前<code>nums[i]</code>计算<code>need = target - nums[i]</code>，如果<code>need</code>已经出现过，那么直接返回，否则就把 <code>nums[i]</code>存进<code>哈希表</code></p>
-<p>这样时间复杂度便能达到<code>O(n)</code>，甚至是<code>O(1)</code>！</p>
+<p>这样时间复杂度便能达到<code>O(n)</code>，甚至是<code>O(1)</code></p>
 <p>代码如下</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unordered_map&gt;</span></span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">twoSum</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums, <span class="hljs-type">int</span> target)</span> </span>&#123;<br>        unordered_map &lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt; mp; <span class="hljs-comment">//值，索引</span><br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; nums.<span class="hljs-built_in">size</span>(); i++)&#123;<br>            <span class="hljs-type">int</span> need = target - nums[i];<br>            <span class="hljs-keyword">if</span>(mp.<span class="hljs-built_in">count</span>(need))&#123;<br>                <span class="hljs-keyword">return</span> &#123;mp[need],i&#125;;<br>            &#125;<span class="hljs-keyword">else</span>&#123;<br>                mp[nums[i]] = i;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> &#123;&#125;;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
 
@@ -333,7 +333,7 @@
 <p><img src="/images/18.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <p>解法:</p>
 <p><strong>哈希表</strong></p>
-<p>我们通过对字符串字符<code>排序</code>，将字母组成相同的字符串映射到同一个<code>键</code>，从而利用哈希表实现异位词分组~</p>
+<p>我们通过对字符串字符<code>排序</code>，将字母组成相同的字符串映射到同一个<code>键</code>，从而利用哈希表实现异位词分组</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    vector&lt;vector&lt;string&gt;&gt; <span class="hljs-built_in">groupAnagrams</span>(vector&lt;string&gt;&amp; strs) &#123;<br>        unordered_map&lt;string, vector&lt;string&gt;&gt; mp;<br><br>        <span class="hljs-keyword">for</span>(string s : strs) &#123;<br>            string key =  s;<br>            <span class="hljs-built_in">sort</span>(key.<span class="hljs-built_in">begin</span>(),key.<span class="hljs-built_in">end</span>()); <span class="hljs-comment">//排序</span><br>            mp[key].<span class="hljs-built_in">push_back</span>(s); <span class="hljs-comment">//值，索引</span><br>        &#125;<br><br>        vector&lt;vector&lt;string&gt;&gt; result;<br><br>        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">auto</span>&amp; p : mp)&#123;<br>            result.<span class="hljs-built_in">push_back</span>(p.second);<br>        &#125;<br>        <span class="hljs-keyword">return</span> result;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
 
 <p>128.最长连续序列</p>
@@ -343,18 +343,20 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">longestConsecutive</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums)</span> </span>&#123;<br>        <span class="hljs-function">unordered_set&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">st</span><span class="hljs-params">(nums.begin(), nums.end())</span></span>;<br>        <span class="hljs-type">int</span> ans = <span class="hljs-number">0</span>;<br>        <span class="hljs-comment">//思考...</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> x : st) &#123;<br>            <span class="hljs-keyword">if</span> (!st.<span class="hljs-built_in">count</span>(x - <span class="hljs-number">1</span>)) &#123;<br>                <span class="hljs-type">int</span> cur = x;<br>                <span class="hljs-type">int</span> len = <span class="hljs-number">1</span>;<br><br>                <span class="hljs-keyword">while</span> (st.<span class="hljs-built_in">count</span>(cur + <span class="hljs-number">1</span>)) &#123;<br>                    cur++;<br>                    len++;<br>                &#125;<br>                ans = <span class="hljs-built_in">max</span>(ans, len); <span class="hljs-comment">//举一反三</span><br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> ans;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
 
 <p>注意一下<code>unordered_map</code>和<code>unordered_set</code>的区别</p>
-<p><code>unordered_set</code>只有key(只关心元素存不存在)，<code>unordered_map</code>存在key-&gt;value的<strong>映射</strong>关系</p>
+<p><code>unordered_set</code>只有key(只关心元素存不存在)，<code>unordered_map</code>则存在key-&gt;value的<strong>映射</strong>关系</p>
 <p>哈希表的<code>底层</code>原理:</p>
 <p>桶数组(bucket array) + 哈希函数(<strong>映射</strong>关系) + 链表&#x2F;树?(处理<strong>哈希冲突</strong>) + 负载因子扩容(rehash)</p>
 <p>待补充…</p>
 <p>2026.2.11吐槽:</p>
 <p>最近尝试用cpp手搓一个stl</p>
 <p>被cpp的逆天语法击败了</p>
-<p>怎么会有这么抽象的语言???</p>
+<p>怎么会有这么抽象的语言…</p>
 <p>后面写到 map set unordered_map unordered_set 再说</p>
-<p>我才知道这些的底层原理原来还不一样qwq</p>
-<p>还好之前写过红黑树，在密码学中也接触过hash~</p>
-<p>拜拜~</p>
+<p>我才知道这些的底层原理原来还不一样</p>
+<p>还好之前写过红黑树，在密码学中也接触过hash</p>
+<p>拜拜</p>
+<p>对了</p>
+<p>感谢阅读</p>
 
                 
               </div>
@@ -423,7 +425,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2026年2月28日</div>
+          <div>2026年4月16日</div>
         </div>
       
       

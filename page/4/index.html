@@ -201,7 +201,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Nice to meet you~"></span>
+            <span id="subtitle" data-typed-text="Nice to meet you"></span>
           
         </div>
 
@@ -502,7 +502,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/01/02/fmt-bss/" target="_self">
         <div>
-          加餐~ 今天依旧是一道格式化字符串漏洞的题目，题目出自NewStarCTF2025的week5pwn 题目给的提示-&gt; hint:对于常规的栈上格式化字符串漏洞，可以任意构造自己的恶意数据来实现任意地址写，但是对于非栈上变量来说，就无法直接给出目的地址的指针，此时就需要留意栈上残留的内容，看看能不能找到可以利用的点(善用你的gdb)… 先来看看题目逻辑 1234567891011121314
+          一道格式化字符串漏洞的题目，题目出自NewStarCTF2025的week5pwn 题目给的提示: hint:对于常规的栈上格式化字符串漏洞，可以任意构造自己的恶意数据来实现任意地址写，但是对于非栈上变量来说，就无法直接给出目的地址的指针，此时就需要留意栈上残留的内容，看看能不能找到可以利用的点(善用你的gdb) 先来看看题目逻辑 1234567891011121314151617undefine
         </div>
       </a>
 
@@ -630,7 +630,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/12/30/fmt-got/" target="_self">
         <div>
-          你好，又见面了… 也有可能是第一次见面? 算了今天不废话了，直接看题目吧 1234567891011121314151617void main(void)&#123;  long in_FS_OFFSET;  char local_118 [264];  undefined8 local_10;    local_10 = *(undefined8 *)(in_FS_OFFSET + 0x28);
+          题目: 1234567891011121314151617void main(void)&#123;  long in_FS_OFFSET;  char local_118 [264];  undefined8 local_10;    local_10 = *(undefined8 *)(in_FS_OFFSET + 0x28);  setup();  puts(&quot;tell me wh
         </div>
       </a>
 
@@ -669,9 +669,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/ret2GOT/">#ret2GOT</a>
-            
               <a href="/tags/fmt/">#fmt</a>
+            
+              <a href="/tags/ret2GOT/">#ret2GOT</a>
             
           </div>
         
@@ -693,7 +693,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/12/25/ret2csu/" target="_self">
         <div>
-          别急，还没写… 好了，现在写了… 额，还记得上次没有gadget的情况下我们采用了SROP，但是倘若没有syscall也没法控制rax呢，别急，还有一个办法，便是今天的ret2csu ps:现在看来当时好天真TT 一般的elf文件在libc_start_main中会存在libc_csu_init对libc进行初始化，而恰好libc_csu_init中隐含着两个我们可以利用的gadget… 一般长这
+          别急，还没写… 好了，现在写了… 额，还记得上次没有gadget的情况下我们采用了SROP，但是倘若没有syscall也没法控制rax呢，别急，还有一个办法，便是今天的ret2csu 一般的elf文件在libc_start_main中会存在libc_csu_init对libc进行初始化，而恰好libc_csu_init中隐含着两个我们可以利用的gadget… 一般长这样，gadget1: 1234
         </div>
       </a>
 
@@ -756,7 +756,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/12/25/hello-pwn/" target="_self">
         <div>
-          为什么写blog? 为什么打ctf? 为什么选择pwn? 鬼知道 也许是无聊吧 用此博客来记录我在pwn学习过程中的一些题解与思考 希望你能有所收获… ps:自言自语 bro以为自己是网红blogger 实则静态博客闹麻了 不过写给以后的自己看似乎也不错???  modification: 于2026.1.1 最近学习了一些栈漏洞 本打算继续学堆 但是我要先摆几天 期末还没复习 不重要了 最讨厌的
+          无聊 随便写写 用此博客来记录我在pwn学习过程中的一些题解与思考 希望你能有所收获  2026.1.1 最近学习了一些栈漏洞 本打算继续学堆 但是我要先摆几天 期末还没复习 不重要了 最讨厌的就是卷成绩这种事  2026.2.2 随记 不知道干嘛 还是奉行我的人生信条吧 做自己想做的 我感觉我的coding能力似乎也太差了，有点过于依赖ai了 关于怎么提升也没有什么头绪，也许需要学点数据结构与算
         </div>
       </a>
 
@@ -817,7 +817,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/12/25/SROP/" target="_self">
         <div>
-          建议先看stack pivot再来这里… ok题目来自XSWCTF2025初赛的一道pwn，考察了更加精妙的栈风水布局(基于stack pivot)，同时融合着SROP和ORW，来看看吧! ps:虽然比赛时我也没做出来(x_x) 先看一下题目逻辑 123456789101112131415void main(void)&#123;  undefined1 local_78 [108];  unde
+          建议先看stack pivot再来这里… 题目来自XSWCTF2025初赛的一道pwn，考察了更加精妙的栈风水布局(基于stack pivot)，同时融合着SROP和ORW ps:虽然比赛时我也没做出来(x_x) 先看一下题目逻辑 123456789101112131415void main(void)&#123;  undefined1 local_78 [108];  undefined4 l
         </div>
       </a>
 

